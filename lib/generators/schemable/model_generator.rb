@@ -19,8 +19,6 @@ module Schemable
       else
 
         create_file(target_path, <<-FILE
-require './lib/swagger/concerns/schemable'
-
 module Swagger
   module Definitions
     class #{@model_name.classify}
