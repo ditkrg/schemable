@@ -30,8 +30,8 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "jsonapi-rails", ">= 0.4.1"
-  spec.add_dependency "factory_bot_rails", ">= 6.2.0"
+  spec.add_dependency "jsonapi-rails", "~> 0.4.1"
+  spec.add_dependency "factory_bot_rails", "~> 6.2.0"
 
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
