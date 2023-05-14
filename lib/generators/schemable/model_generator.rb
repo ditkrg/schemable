@@ -12,7 +12,7 @@ module Schemable
     end
 
     def copy_initializer
-      target_path = "lib/swagger/definitions/#{@model_name.underscore.downcase.singlurize}.rb"
+      target_path = "lib/swagger/definitions/#{@model_name.underscore.downcase.singularize}.rb"
 
       if Rails.root.join(target_path).exist?
         say_status('skipped', 'Model definition already exists')
@@ -29,7 +29,7 @@ module Swagger
       attr_accessor :instance
 
       def initialize
-        @instance ||=  JSONAPI::Serializable::Renderer.new.render(FactoryBot.create(:#{@model_name.underscore.downcase.singlurize}), class: serializers_map, include: [])
+        @instance ||=  JSONAPI::Serializable::Renderer.new.render(FactoryBot.create(:#{@model_name.underscore.downcase.singularize}), class: serializers_map, include: [])
       end
 
       def serializer
