@@ -37,7 +37,7 @@ module Swagger
       end
 
       def excluded_request_attributes
-        %i[id updatedAt createdAt]
+        %i[updated_at created_at]
       end
     end
   end
