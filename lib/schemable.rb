@@ -42,24 +42,31 @@ module Schemable
     # Modify a JSON schema object by merging new properties into it or deleting a specified path.
     #
     # @param original_schema [Hash] The original schema object to modify.
+    #
     # @param new_props [Hash] The new properties to merge into the schema.
-    # @param given_path [String, nil] The path to the property to modify or delete, if any.
-    # Use dot notation to specify nested properties (e.g. "person.address.city").
+    #
+    # @param given_path [String, nil] The path to the property to modify or delete, if any. Use dot notation to specify nested properties (e.g. "person.address.city").
+    #
     # @param delete [Boolean] Whether to delete the property at the given path, if it exists.
+    #
     # @raise [ArgumentError] If `delete` is true but `given_path` is nil, or if `given_path` does not exist in the original schema.
     #
     # @return [Hash] A new schema object with the specified modifications.
     #
-    # @example Merge new properties into the schema
-    #   original_schema = { type: 'object', properties: { name: { type: 'string' } } }
-    #   new_props = { properties: { age: { type: 'integer' } } }
-    #   modify_schema(original_schema, new_props)
-    #   # => { type: 'object', properties: { name: { type: 'string' }, age: { type: 'integer' } } }
+    # @example
+    #  `Merge new properties into the schema`
     #
-    # @example Delete a property from the schema
-    #   original_schema = { type: 'object', properties: { name: { type: 'string' } } }
-    #   modify_schema(original_schema, {}, 'properties.name', delete: true)
-    #   # => { type: 'object', properties: {} }
+    #    original_schema = { type: 'object', properties: { name: { type: 'string' } } }
+    #    new_props = { properties: { age: { type: 'integer' } } }
+    #    modify_schema(original_schema, new_props)
+    #     => {type: 'object', properties: {name: {type: 'string'}, age: {type: 'integer'}}}
+    #
+    # @example
+    #  `Delete a property from the schema`
+    #
+    #    original_schema = { type: 'object', properties: { name: { type: 'string' } } }
+    #    modify_schema(original_schema, {}, 'properties.name', delete: true)
+    #     => {type: 'object', properties: {}}
     def modify_schema(original_schema, new_props, given_path = nil, delete: false)
       return new_props if original_schema.nil?
 
@@ -104,8 +111,7 @@ module Schemable
     # @return [Hash] The JSON Schema attribute definition as a Hash or an empty Hash if the attribute does not exist on the model.
     #
     # @example
-    #  attribute_schema(:title)
-    #  # => { "type": "string" }
+    #  attribute_schema(:title) => { "type": "string" }
     def attribute_schema(attribute)
       # Get the column hash for the attribute
       column_hash = model.columns_hash[attribute.to_s]
@@ -159,16 +165,16 @@ module Schemable
     #
     # @note The `additional_response_attributes` and `excluded_response_attributes` are applied to the schema returned by this method.
     #
-    # @example
-    # {
-    #   type: :object,
-    #   properties: {
-    #     id: { type: :string },
-    #     title: { type: :string }
-    #   }
-    # }
-    #
     # @return [Hash] The JSON Schema for the model's attributes.
+    #
+    # @example
+    #  {
+    #    type: :object,
+    #    properties: {
+    #      id: { type: :string },
+    #      title: { type: :string }
+    #    }
+    #  }
     def attributes_schema
       schema = {
         type: :object,
@@ -191,35 +197,35 @@ module Schemable
 
     # Generates the schema for the relationships of a resource.
     #
-    # @param relations [Hash] A hash representing the relationships of the resource in the form of { belongs_to: {}, has_many: {} }.
-    # If not provided, the relationships will be inferred from the model's associations.
-    #
     # @note The `additional_response_relations` and `excluded_response_relations` are applied to the schema returned by this method.
     #
+    # @param relations [Hash] A hash representing the relationships of the resource in the form of { belongs_to: {}, has_many: {} }. If not provided, the relationships will be inferred from the model's associations.
+    #
     # @param expand [Boolean] A boolean indicating whether to expand the relationships in the schema.
+    #
     # @param exclude_from_expansion [Array] An array of relationship names to exclude from expansion.
     #
-    # @example
-    # {
-    #   type: :object,
-    #   properties: {
-    #     province: {
-    #       type: :object,
-    #       properties: {
-    #         meta: {
-    #           type: :object,
-    #           properties: {
-    #             included: {
-    #               type: :boolean, default: false
-    #             }
-    #           }
-    #         }
-    #       }
-    #     }
-    #   }
-    # }
-    #
     # @return [Hash] A hash representing the schema for the relationships.
+    #
+    # @example
+    #  {
+    #    type: :object,
+    #    properties: {
+    #      province: {
+    #        type: :object,
+    #        properties: {
+    #          meta: {
+    #            type: :object,
+    #            properties: {
+    #              included: {
+    #                type: :boolean, default: false
+    #              }
+    #            }
+    #          }
+    #        }
+    #      }
+    #    }
+    #  }
     def relationships_schema(relations = try(:relationships), expand: false, exclude_from_expansion: [])
       return {} if relations.blank?
       return {} if relations == { belongs_to: {}, has_many: {} }
@@ -306,39 +312,41 @@ module Schemable
     #
     # @note The `additional_response_includes` and `excluded_response_includes` (yet to be implemented) are applied to the schema returned by this method.
     #
-    # @param relations [Hash] A hash representing the relationships of the resource in the form of { belongs_to: {}, has_many: {} }.
-    # If not provided, the relationships will be inferred from the model's associations.
+    # @param relations [Hash] A hash representing the relationships of the resource in the form of { belongs_to: {}, has_many: {} }. If not provided, the relationships will be inferred from the model's associations.
+    #
     # @param expand [Boolean] A boolean indicating whether to expand the relationships of the relationships in the schema.
+    #
     # @param exclude_from_expansion [Array] An array of relationship names to exclude from expansion.
+    #
     # @param metadata [Hash] Additional metadata to include in the schema, usually received from the nested_relationships method sent by the response_schema method.
     #
-    # @example
-    # {
-    #   included: {
-    #     type: :array,
-    #     items: {
-    #       anyOf:
-    #         [
-    #           {
-    #             type: :object,
-    #             properties: {
-    #               type: { type: :string, default: "provinces" },
-    #               id: { type: :string },
-    #               attributes: {
-    #                 type: :object,
-    #                 properties: {
-    #                   id: { type: :string },
-    #                   name: { type: :string }
-    #                 }
-    #               }
-    #             }
-    #           }
-    #         ]
-    #     }
-    #   }
-    # }
-    #
     # @return [Hash] A hash representing the schema for the included resources.
+    #
+    # @example
+    #  {
+    #    included: {
+    #      type: :array,
+    #      items: {
+    #        anyOf:
+    #          [
+    #            {
+    #              type: :object,
+    #              properties: {
+    #                type: { type: :string, default: "provinces" },
+    #                id: { type: :string },
+    #                attributes: {
+    #                  type: :object,
+    #                  properties: {
+    #                    id: { type: :string },
+    #                    name: { type: :string }
+    #                  }
+    #                }
+    #              }
+    #            }
+    #          ]
+    #      }
+    #    }
+    #  }
     def included_schema(relations = try(:relationships), expand: false, exclude_from_expansion: [], metadata: {})
       return {} if relations.blank?
       return {} if relations == { belongs_to: {}, has_many: {} }
@@ -426,18 +434,22 @@ module Schemable
 
     # Generates the schema for the response of a resource or collection of resources in JSON API format.
     #
-    # @param relations [Hash] A hash representing the relationships of the resource in the form of { belongs_to: {}, has_many: {} }.
-    # If not provided, the relationships will be inferred from the model's associations.
+    # @param relations [Hash] A hash representing the relationships of the resource in the form of { belongs_to: {}, has_many: {} }. If not provided, the relationships will be inferred from the model's associations.
+    #
     # @param expand [Boolean] A boolean indicating whether to expand the relationships of the relationships in the schema.
+    #
     # @param exclude_from_expansion [Array] An array of relationship names to exclude from expansion.
+    #
     # @param multi [Boolean] A boolean indicating whether the response contains multiple resources.
+    #
     # @param nested [Boolean] A boolean indicating whether the response is to be expanded further than the first level of relationships. (expand relationships of relationships)
+    #
     # @param metadata [Hash] Additional metadata to include in the schema, usually received from the nested_relationships method sent by the response_schema method.
     #
-    # @example
-    # The returned schema will have a JSON API format, including the data (included attributes and relationships), included and meta keys.
-    #
     # @return [Hash] A hash representing the schema for the response.
+    #
+    # @example
+    #  "The returned schema will have a JSON API format, including the data (included attributes and relationships), included and meta keys."
     def response_schema(relations = try(:relationships), expand: false, exclude_from_expansion: [], multi: false, nested: false, metadata: { nested_relationships: try(:nested_relationships) })
 
       data = {
@@ -492,29 +504,30 @@ module Schemable
       }
     end
 
-    # Generates the schema for the request payload of a resource.
+
+    # Generates the schema for the creation request payload of a resource.
     #
-    # @note The `additional_request_attributes` and `excluded_request_attributes` applied to the returned schema by this method.
+    # @note The `additional_create_request_attributes` and `excluded_create_request_attributes` applied to the returned schema by this method.
     # @note The `required_attributes` are applied to the returned schema by this method.
     # @note The `nullable_attributes` are applied to the returned schema by this method.
     #
-    # @example
-    # {
-    #     type: :object,
-    #     properties: {
-    #       data: {
-    #         type: :object,
-    #         properties: {
-    #           firstName: { type: :string },
-    #           lastName: { type: :string }
-    #         },
-    #         required: [:firstName, :lastName]
-    #       }
-    #     }
-    # }
-    #
     # @return [Hash] A hash representing the schema for the request payload.
-    def request_schema
+    #
+    # @example
+    #  {
+    #      type: :object,
+    #      properties: {
+    #        data: {
+    #          type: :object,
+    #          properties: {
+    #            firstName: { type: :string },
+    #            lastName: { type: :string }
+    #          },
+    #          required: [:firstName, :lastName]
+    #        }
+    #      }
+    #  }
+    def create_request_schema
       schema = {
         type: :object,
         properties: {
@@ -522,14 +535,60 @@ module Schemable
         }
       }
 
-      schema = modify_schema(schema, additional_request_attributes, "properties.data.properties")
+      schema = modify_schema(schema, additional_create_request_attributes, "properties.data.properties")
 
-      excluded_request_attributes.each do |key|
+      excluded_create_request_attributes.each do |key|
         schema = modify_schema(schema, {}, "properties.data.properties.#{key}", delete: true)
       end
 
       required_attributes = {
-        required: (schema.as_json['properties']['data']['properties'].keys - optional_request_attributes.map(&:to_s) - nullable_attributes.map(&:to_s)).map { |key| key.to_s.camelize(:lower).to_sym }
+        required: (schema.as_json['properties']['data']['properties'].keys - optional_create_request_attributes.map(&:to_s) - nullable_attributes.map(&:to_s)).map { |key| key.to_s.camelize(:lower).to_sym }
+      }
+
+      schema = modify_schema(schema, required_attributes, "properties.data")
+
+      schema
+    end
+
+
+    # Generates the schema for the update request payload of a resource.
+    #
+    # @note The `additional_update_request_attributes` and `excluded_update_request_attributes` applied to the returned schema by this method.
+    # @note The `required_attributes` are applied to the returned schema by this method.
+    # @note The `nullable_attributes` are applied to the returned schema by this method.
+    #
+    # @return [Hash] A hash representing the schema for the request payload.
+    #
+    # @example
+    #  {
+    #      type: :object,
+    #      properties: {
+    #        data: {
+    #          type: :object,
+    #          properties: {
+    #            firstName: { type: :string },
+    #            lastName: { type: :string }
+    #          },
+    #          required: [:firstName, :lastName]
+    #        }
+    #      }
+    #  }
+    def update_request_schema
+      schema = {
+        type: :object,
+        properties: {
+          data: attributes_schema
+        }
+      }
+
+      schema = modify_schema(schema, additional_update_request_attributes, "properties.data.properties")
+
+      excluded_update_request_attributes.each do |key|
+        schema = modify_schema(schema, {}, "properties.data.properties.#{key}", delete: true)
+      end
+
+      required_attributes = {
+        required: (schema.as_json['properties']['data']['properties'].keys - optional_update_request_attributes.map(&:to_s) - nullable_attributes.map(&:to_s)).map { |key| key.to_s.camelize(:lower).to_sym }
       }
 
       schema = modify_schema(schema, required_attributes, "properties.data")
@@ -538,11 +597,9 @@ module Schemable
     end
 
     # Returns the schema for the meta data of the response body.
-    #
     # This is used to provide pagination information usually (in the case of a collection).
     #
-    # Note that this is an opinionated schema and may not be suitable for all use cases.
-    # If you need to override this schema, you can do so by overriding the `meta` method in your definition.
+    # @note Note that this is an opinionated schema and may not be suitable for all use cases. If you need to override this schema, you can do so by overriding the `meta` method in your definition.
     #
     # @return [Hash] The schema for the meta data of the response body.
     def meta
@@ -591,179 +648,213 @@ module Schemable
 
     # Returns the resource serializer to be used for serialization. This method must be implemented in the definition class.
     #
-    # @raise [NotImplementedError] If the method is not implemented in the definition class.
-    #
-    # @example V1::UserSerializer
-    #
     # @abstract This method must be implemented in the definition class.
     #
+    # @raise [NotImplementedError] If the method is not implemented in the definition class.
+    #
     # @return [Class] The resource serializer class.
+    #
+    # @example
+    #  V1::UserSerializer
+    #
     def serializer
       raise NotImplementedError, 'serializer method must be implemented in the definition class'
     end
 
     # Returns the attributes defined in the serializer (Auto generated from the serializer).
     #
-    # @example
-    # [:id, :name, :email, :created_at, :updated_at]
-    #
     # @return [Array<Symbol>, nil] The attributes defined in the serializer or nil if there are none.
+    #
+    # @example
+    #  [:id, :name, :email, :created_at, :updated_at]
     def attributes
       serializer.attribute_blocks.transform_keys { |key| key.to_s.underscore.to_sym }.keys || nil
     end
 
     # Returns the relationships defined in the serializer.
     #
-    # Note that the format of the relationships is as follows: { belongs_to: { relationship_name: relationship_definition }, has_many: { relationship_name: relationship_definition }
+    # @return [Hash] The relationships defined in the serializer.
+    #
+    # @note Note that the format of the relationships is as follows:
+    #   { belongs_to: { relationship_name: relationship_definition }, has_many: { relationship_name: relationship_definition }
     #
     # @example
-    # {
-    #   belongs_to: {
-    #     district: Swagger::Definitions::District,
-    #     user: Swagger::Definitions::User
-    #   },
-    #   has_many: {
-    #     applicants: Swagger::Definitions::Applicant,
-    #   }
-    # }
-    #
-    # @return [Hash] The relationships defined in the serializer.
+    #  {
+    #    belongs_to: {
+    #      district: Swagger::Definitions::District,
+    #      user: Swagger::Definitions::User
+    #    },
+    #    has_many: {
+    #      applicants: Swagger::Definitions::Applicant,
+    #    }
+    #  }
     def relationships
       { belongs_to: {}, has_many: {} }
     end
 
     # Returns a hash of all the arrays defined for the model. The schema for each array is defined in the definition class manually.
-    #
     # This method must be implemented in the definition class if there are any arrays.
     #
-    # @example
-    # {
-    #   metadata: {
-    #       type: :array,
-    #       items: {
-    #           type: :object, nullable: true,
-    #           properties: { name: { type: :string, nullable: true } }
-    #       }
-    #   }
-    # }
-    #
     # @return [Hash] The arrays of the model and their schemas.
+    #
+    # @example
+    #  {
+    #    metadata: {
+    #        type: :array,
+    #        items: {
+    #            type: :object, nullable: true,
+    #            properties: { name: { type: :string, nullable: true } }
+    #        }
+    #    }
+    #  }
     def array_types
       {}
     end
 
-    # Returns the attributes that are optional in the request body. This means that they are not required to be present in the request body thus they are taken out of the required array.
+    # Returns the attributes that are optional in the create request body. This means that they are not required to be present in the create request body thus they are taken out of the required array.
+    #
+    # @return [Array<Symbol>] The attributes that are optional in the create request body.
     #
     # @example
-    # [:name, :email]
+    #  [:name, :email]
+    def optional_create_request_attributes
+      %i[]
+    end
+
+    # Returns the attributes that are optional in the update request body. This means that they are not required to be present in the update request body thus they are taken out of the required array.
     #
-    # @return [Array<Symbol>] The attributes that are optional in the request body.
-    def optional_request_attributes
+    # @return [Array<Symbol>] The attributes that are optional in the update request body.
+    #
+    # @example
+    #  [:name, :email]
+    def optional_update_request_attributes
       %i[]
     end
 
     # Returns the attributes that are nullable in the request/response body. This means that they can be present in the request/response body but they can be null.
-    #
     # They are not required to be present in the request body.
     #
-    # @example
-    # [:name, :email]
-    #
     # @return [Array<Symbol>] The attributes that are nullable in the request/response body.
+    #
+    # @example
+    #  [:name, :email]
     def nullable_attributes
       %i[]
     end
 
-    # Returns the additional request attributes that are not automatically generated. These attributes are appended to the request schema.
+    # Returns the additional create request attributes that are not automatically generated. These attributes are appended to the create request schema.
+    #
+    # @return [Hash] The additional create request attributes that are not automatically generated (if any).
     #
     # @example
-    # {
-    #  name: { type: :string }
-    # }
+    #  {
+    #    name: { type: :string }
+    #  }
+    def additional_create_request_attributes
+      {}
+    end
+
+    # Returns the additional update request attributes that are not automatically generated. These attributes are appended to the update request schema.
     #
-    # @return [Hash] The additional request attributes that are not automatically generated (if any).
-    def additional_request_attributes
+    # @return [Hash] The additional update request attributes that are not automatically generated (if any).
+    #
+    # @example
+    #  {
+    #    name: { type: :string }
+    #  }
+    def additional_update_request_attributes
       {}
     end
 
     # Returns the additional response attributes that are not automatically generated. These attributes are appended to the response schema.
     #
-    # @example
-    # {
-    # name: { type: :string }
-    # }
-    #
     # @return [Hash] The additional response attributes that are not automatically generated (if any).
+    #
+    # @example
+    #  {
+    #    name: { type: :string }
+    #  }
     def additional_response_attributes
       {}
     end
 
     # Returns the additional response relations that are not automatically generated. These relations are appended to the response schema's relationships.
     #
-    # @example
-    # {
-    #   users: {
-    #     type: :object,
-    #     properties: {
-    #       data: {
-    #         type: :array,
-    #         items: {
-    #           type: :object,
-    #           properties: {
-    #             id: { type: :string },
-    #             type: { type: :string }
-    #           }
-    #         }
-    #       }
-    #     }
-    #   }
-    # }
-    #
     # @return [Hash] The additional response relations that are not automatically generated (if any).
+    #
+    # @example
+    #  {
+    #    users: {
+    #      type: :object,
+    #      properties: {
+    #        data: {
+    #          type: :array,
+    #          items: {
+    #            type: :object,
+    #            properties: {
+    #              id: { type: :string },
+    #              type: { type: :string }
+    #            }
+    #          }
+    #        }
+    #      }
+    #    }
+    #  }
     def additional_response_relations
       {}
     end
 
     # Returns the additional response included that are not automatically generated. These included are appended to the response schema's included.
     #
-    # @example
-    # {
-    #   type: :object,
-    #   properties: {
-    #     id: { type: :string },
-    #     type: { type: :string },
-    #     attributes: {
-    #       type: :object,
-    #       properties: {
-    #         name: { type: :string }
-    #       }
-    #     }
-    #   }
-    # }
-    #
     # @return [Hash] The additional response included that are not automatically generated (if any).
+    #
+    # @example
+    #  {
+    #    type: :object,
+    #    properties: {
+    #      id: { type: :string },
+    #      type: { type: :string },
+    #      attributes: {
+    #        type: :object,
+    #        properties: {
+    #          name: { type: :string }
+    #        }
+    #      }
+    #    }
+    #  }
     def additional_response_included
       {}
     end
 
-    # Returns the attributes that are excluded from the request schema.
-    # These attributes are not required or not needed to be present in the request body.
+    # Returns the attributes that are excluded from the create request schema.
+    # These attributes are not required or not needed to be present in the create request body.
+    #
+    # @return [Array<Symbol>] The attributes that are excluded from the create request schema.
     #
     # @example
-    # [:id, :updated_at, :created_at]
+    #  [:id, :updated_at, :created_at]
+    def excluded_create_request_attributes
+      %i[]
+    end
+
+    # Returns the attributes that are excluded from the update request schema.
+    # These attributes are not required or not needed to be present in the update request body.
     #
-    # @return [Array<Symbol>] The attributes that are excluded from the request schema.
-    def excluded_request_attributes
+    # @return [Array<Symbol>] The attributes that are excluded from the update request schema.
+    #
+    # @example
+    #  [:id, :updated_at, :created_at]
+    def excluded_update_request_attributes
       %i[]
     end
 
     # Returns the attributes that are excluded from the response schema.
     # These attributes are not needed to be present in the response body.
     #
-    # @example
-    # [:id, :updated_at, :created_at]
-    #
     # @return [Array<Symbol>] The attributes that are excluded from the response schema.
+    #
+    # @example
+    #  [:id, :updated_at, :created_at]
     def excluded_response_attributes
       %i[]
     end
@@ -771,10 +862,10 @@ module Schemable
     # Returns the relationships that are excluded from the response schema.
     # These relationships are not needed to be present in the response body.
     #
-    # @example
-    # [:users, :applicants]
-    #
     # @return [Array<Symbol>] The relationships that are excluded from the response schema.
+    #
+    # @example
+    #  [:users, :applicants]
     def excluded_response_relations
       %i[]
     end
@@ -782,73 +873,81 @@ module Schemable
     # Returns the included that are excluded from the response schema.
     # These included are not needed to be present in the response body.
     #
-    # @todo This method is not used anywhere yet.
+    # @return [Array<Symbol>] The included that are excluded from the response schema.
     #
     # @example
-    # [:users, :applicants]
+    #  [:users, :applicants]
     #
-    # @return [Array<Symbol>] The included that are excluded from the response schema.
+    # @todo
+    #  This method is not used anywhere yet.
     def excluded_response_included
       %i[]
     end
 
     # Returns the relationships to be further expanded in the response schema.
     #
-    # @example
-    # {
-    #   applicants: {
-    #     belongs_to: {
-    #       district: Swagger::Definitions::District,
-    #       province: Swagger::Definitions::Province,
-    #     },
-    #     has_many: {
-    #       attachments: Swagger::Definitions::Upload,
-    #     }
-    #   }
-    # }
-    #
     # @return [Hash] The relationships to be further expanded in the response schema.
+    #
+    # @example
+    #  {
+    #    applicants: {
+    #      belongs_to: {
+    #        district: Swagger::Definitions::District,
+    #        province: Swagger::Definitions::Province,
+    #      },
+    #      has_many: {
+    #        attachments: Swagger::Definitions::Upload,
+    #      }
+    #    }
+    #  }
     def nested_relationships
       {}
     end
 
     # Returns the model class (Constantized from the definition class name)
     #
-    # @example
-    # User
-    #
     # @return [Class] The model class (Constantized from the definition class name)
+    #
+    # @example
+    #  User
     def model
       self.class.name.gsub("Swagger::Definitions::", '').constantize
     end
 
     # Returns the model name. Used for schema type naming.
     #
-    # @example
-    # 'users' for the User model
-    # 'citizen_applications' for the CitizenApplication model
-    #
     # @return [String] The model name.
+    #
+    # @example
+    #  'users' for the User model
+    #  'citizen_applications' for the CitizenApplication model
     def self.model_name
       name.gsub("Swagger::Definitions::", '').pluralize.underscore.downcase
     end
 
     # Returns the generated schemas in JSONAPI format that are used in the swagger documentation.
     #
-    # @note This method is used for generating schema in 3 different formats: request, response and response expanded.
-    # request: The schema for the request body.
-    # response: The schema for the response body (without any relationships expanded), used for collection responses.
-    # response expanded: The schema for the response body with all the relationships expanded, used for single resource responses.
+    # @return [Array<Hash>] The generated schemas in JSONAPI format that are used in the swagger documentation.
+    #
+    # @note This method is used for generating schema in 4 different formats: request (both create and update), response and response expanded.
+    #
+    # @option CreateRequest
+    #  is the schema for the creation request body.
+    # @option UpdateRequest
+    #  is the schema for the updating request body.
+    # @option Response
+    #  is the schema for the response body (without any relationships expanded), used for collection responses.
+    # @option ResponseExpanded: The schema for the response body with all the relationships expanded, used for single resource responses.
     #
     # @note The returned schemas are in JSONAPI format are usually appended to the rswag component's 'schemas' in swagger_helper.
     #
     # @note The method can be overridden in the definition class if there are any additional customizations needed.
     #
-    # @return [Array<Hash>] The generated schemas in JSONAPI format that are used in the swagger documentation.
     def self.definitions
       schema_instance = self.new
       [
-        "#{schema_instance.model}Request": schema_instance.camelize_keys(schema_instance.request_schema),
+        "#{schema_instance.model}CreateRequest": schema_instance.camelize_keys(schema_instance.create_request_schema),
+        "#{schema_instance.model}UpdateRequest": schema_instance.camelize_keys(schema_instance.update_request_schema),
         "#{schema_instance.model}Response": schema_instance.camelize_keys(schema_instance.response_schema(multi: true)),
         "#{schema_instance.model}ResponseExpanded": schema_instance.camelize_keys(schema_instance.response_schema(expand: true))
       ]
@@ -858,10 +957,10 @@ module Schemable
     #
     # @param hash [Array | Hash] The hash with all the keys camelized.
     #
-    # @example
-    # { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
-    #
     # @return [Array | Hash] The hash with all the keys camelized.
+    #
+    # @example
+    #  { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
     def camelize_keys(hash)
       hash.deep_transform_keys { |key| key.to_s.camelize(:lower).to_sym }
     end
