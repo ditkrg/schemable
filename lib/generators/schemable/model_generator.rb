@@ -36,7 +36,11 @@ module Swagger
         V1::#{@model_name.classify}Serializer
       end
 
-      def excluded_request_attributes
+      def excluded_create_request_attributes
+        %i[updated_at created_at]
+      end
+
+      def excluded_update_request_attributes
         %i[updated_at created_at]
       end
     end
