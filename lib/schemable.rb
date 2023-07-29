@@ -529,7 +529,7 @@ module Schemable
       end
 
       required_attributes = {
-        required: schema.as_json['properties']['data']['properties'].keys - optional_request_attributes.map(&:to_s) - nullable_attributes.map(&:to_s)
+        required: (schema.as_json['properties']['data']['properties'].keys - optional_request_attributes.map(&:to_s) - nullable_attributes.map(&:to_s)).map { |key| key.to_s.camelize(:lower).to_sym }
       }
 
       schema = modify_schema(schema, required_attributes, "properties.data")
