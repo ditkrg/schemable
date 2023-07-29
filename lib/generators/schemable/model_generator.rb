@@ -4,8 +4,8 @@ module Schemable
     source_root File.expand_path('../../templates', __dir__)
     class_option :model_name, type: :string, default: 'Model', desc: 'Name of the model'
 
-    def initialize(*)
-      super(*)
+    def initialize(*args)
+      super(*args)
 
       @model_name = options[:model_name]
       @model_name != 'Model' || raise('Model name is required')

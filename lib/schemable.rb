@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "schemable/version"
+require_relative 'schemable/version'
 require 'active_support/concern'
 
 module Schemable
@@ -9,7 +9,6 @@ module Schemable
   extend ActiveSupport::Concern
 
   included do
-
     # Maps a given type name to a corresponding JSON schema object that represents that type.
     #
     # @param type_name [String, Symbol]  A String or Symbol representing the type of the property to be mapped.
@@ -22,7 +21,7 @@ module Schemable
         integer: { type: :integer },
         float: { type: :number, format: :float },
         decimal: { type: :number, format: :double },
-        datetime: { type: :string, format: :"date-time" },
+        datetime: { type: :string, format: :'date-time' },
         date: { type: :string, format: :date },
         time: { type: :string, format: :time },
         boolean: { type: :boolean },
@@ -70,21 +69,15 @@ module Schemable
     def modify_schema(original_schema, new_props, given_path = nil, delete: false)
       return new_props if original_schema.nil?
 
-      if given_path.nil? && delete
-        raise ArgumentError, "Cannot delete without a given path"
-      end
+      raise ArgumentError, 'Cannot delete without a given path' if given_path.nil? && delete
 
       if given_path.present?
         path_segments = given_path.split('.').map(&:to_sym)
 
         if path_segments.size == 1
-          unless original_schema.key?(path_segments.first)
-            raise ArgumentError, "Given path does not exist in the original schema"
-          end
+          raise ArgumentError, 'Given path does not exist in the original schema' unless original_schema.key?(path_segments.first)
         else
-          unless original_schema.dig(*path_segments[0..-2]).is_a?(Hash) && original_schema.dig(*path_segments)
-            raise ArgumentError, "Given path does not exist in the original schema"
-          end
+          raise ArgumentError, 'Given path does not exist in the original schema' unless original_schema.dig(*path_segments[0..-2]).is_a?(Hash) && original_schema.dig(*path_segments)
         end
 
         path_hash = path_segments.reverse.reduce(new_props) { |a, n| { n => a } }
@@ -117,31 +110,21 @@ module Schemable
       column_hash = model.columns_hash[attribute.to_s]
 
       # Check if this attribute has a custom JSON Schema definition
-      if array_types.keys.include?(attribute)
-        return array_types[attribute]
-      end
+      return array_types[attribute] if array_types.keys.include?(attribute)
 
-      if additional_response_attributes.keys.include?(attribute)
-        return additional_response_attributes[attribute]
-      end
+      return additional_response_attributes[attribute] if additional_response_attributes.keys.include?(attribute)
 
       # Check if this is an array attribute
-      if column_hash.as_json.try(:[], 'sql_type_metadata').try(:[], 'sql_type').include?('[]')
-        return type_mapper(:array)
-      end
+      return type_mapper(:array) if column_hash.as_json.try(:[], 'sql_type_metadata').try(:[], 'sql_type').include?('[]')
 
       # Map the column type to a JSON Schema type if none of the above conditions are met
       response = type_mapper(column_hash.try(:type))
 
       # If the attribute is nullable, modify the schema accordingly
-      if response && nullable_attributes.include?(attribute)
-        return modify_schema(response, { nullable: true })
-      end
+      return modify_schema(response, { nullable: true }) if response && nullable_attributes.include?(attribute)
 
       # If attribute is an enum, modify the schema accordingly
-      if response && model.defined_enums.key?(attribute.to_s)
-        return modify_schema(response, { type: :string, enum: model.defined_enums[attribute.to_s].keys })
-      end
+      return modify_schema(response, { type: :string, enum: model.defined_enums[attribute.to_s].keys }) if response && model.defined_enums.key?(attribute.to_s)
 
       return response unless response.nil?
 
@@ -153,7 +136,6 @@ module Schemable
 
       # If we still haven't found a schema type, default to object
       type_mapper(:object)
-
     rescue NoMethodError
       # Log a warning if the attribute does not exist on the model
       Rails.logger.warn("\e[33mWARNING: #{model} does not have an attribute named \e[31m#{attribute}\e[0m")
@@ -178,14 +160,13 @@ module Schemable
     def attributes_schema
       schema = {
         type: :object,
-        properties: attributes.reduce({}) do |props, attr|
-          props[attr] = attribute_schema(attr)
-          props
+        properties: attributes.index_with do |attr|
+          attribute_schema(attr)
         end
       }
 
       # modify the schema to include additional response relations
-      schema = modify_schema(schema, additional_response_attributes, given_path = "properties")
+      schema = modify_schema(schema, additional_response_attributes, 'properties')
 
       # modify the schema to exclude response relations
       excluded_response_attributes.each do |key|
@@ -248,7 +229,6 @@ module Schemable
           if relation_type == :has_many
             props.merge!(
               relation_definitions.keys.index_with do |relationship|
-
                 result = {
                   type: :object,
                   properties: {
@@ -273,7 +253,6 @@ module Schemable
           else
             props.merge!(
               relation_definitions.keys.index_with do |relationship|
-
                 result = {
                   type: :object,
                   properties: {
@@ -298,7 +277,7 @@ module Schemable
       }
 
       # modify the schema to include additional response relations
-      schema = modify_schema(schema, additional_response_relations, "properties")
+      schema = modify_schema(schema, additional_response_relations, 'properties')
 
       # modify the schema to exclude response relations
       excluded_response_relations.each do |key|
@@ -356,7 +335,7 @@ module Schemable
           type: :array,
           items: {
             anyOf:
-              relations.reduce([]) do |props, (relation_type, relation_definitions)|
+              relations.reduce([]) do |props, (_relation_type, relation_definitions)|
                 props + relation_definitions.keys.reduce([]) do |props, relationship|
                   props + [
                     unless exclude_from_expansion.include?(relationship)
@@ -366,16 +345,16 @@ module Schemable
                           type: { type: :string, default: relation_definitions[relationship].model_name },
                           id: { type: :string },
                           attributes: begin
-                                        relation_definitions[relationship].new.attributes_schema || {}
-                                      rescue NoMethodError
-                                        {}
-                                      end
+                            relation_definitions[relationship].new.attributes_schema || {}
+                          rescue NoMethodError
+                            {}
+                          end
                         }.merge(
                           if relation_definitions[relationship].new.relationships != { belongs_to: {}, has_many: {} } || relation_definitions[relationship].new.relationships.blank?
                             if !expand || metadata.blank?
                               { relationships: relation_definitions[relationship].new.relationships_schema(expand: false) }
                             else
-                              { relationships: relation_definitions[relationship].new.relationships_schema(relations = metadata[:nested_relationships][relationship], expand: true, exclude_from_expansion: exclude_from_expansion) }
+                              { relationships: relation_definitions[relationship].new.relationships_schema(relations = metadata[:nested_relationships][relationship], expand: true, exclude_from_expansion:) }
                             end
                           else
                             {}
@@ -385,36 +364,34 @@ module Schemable
                     end
                   ].concat(
                     [
-                      if expand && metadata.present? && !exclude_from_expansion.include?(relationship)
+                      if expand && metadata.present? && exclude_from_expansion.exclude?(relationship)
                         extra_relations = []
                         metadata[:nested_relationships].keys.reduce({}) do |props, nested_relationship|
-                          if metadata[:nested_relationships][relationship].present?
-                            props.merge!(metadata[:nested_relationships][nested_relationship].keys.each_with_object({}) do |relationship_type, inner_props|
-                              props.merge!(metadata[:nested_relationships][nested_relationship][relationship_type].keys.each_with_object({}) do |relationship, inner_inner_props|
+                          next if metadata[:nested_relationships][relationship].blank?
 
-                                extra_relation_schema = {
-                                  type: :object,
-                                  properties: {
-                                    type: { type: :string, default: metadata[:nested_relationships][nested_relationship][relationship_type][relationship].model_name },
-                                    id: { type: :string },
-                                    attributes: metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.attributes_schema
-                                  }.merge(
-                                    if metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.relationships == { belongs_to: {}, has_many: {} } || metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.relationships.blank?
-                                      {}
-                                    else
-                                      result = { relationships: metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.relationships_schema(expand: false) }
-                                      return {} if result == { relationships: {} }
-                                      result
-                                    end
-                                  )
-                                }
+                          props.merge!(metadata[:nested_relationships][nested_relationship].keys.each_with_object({}) do |relationship_type, _inner_props|
+                            props.merge!(metadata[:nested_relationships][nested_relationship][relationship_type].keys.each_with_object({}) do |relationship, _inner_inner_props|
+                              extra_relation_schema = {
+                                type: :object,
+                                properties: {
+                                  type: { type: :string, default: metadata[:nested_relationships][nested_relationship][relationship_type][relationship].model_name },
+                                  id: { type: :string },
+                                  attributes: metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.attributes_schema
+                                }.merge(
+                                  if metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.relationships == { belongs_to: {}, has_many: {} } || metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.relationships.blank?
+                                    {}
+                                  else
+                                    result = { relationships: metadata[:nested_relationships][nested_relationship][relationship_type][relationship].new.relationships_schema(expand: false) }
+                                    return {} if result == { relationships: {} }
 
-                                extra_relations << extra_relation_schema
-                              end
-                              )
-                            end
-                            )
-                          end
+                                    result
+                                  end
+                                )
+                              }
+
+                              extra_relations << extra_relation_schema
+                            end)
+                          end)
                         end
 
                         extra_relations
@@ -427,9 +404,7 @@ module Schemable
         }
       }
 
-      schema = modify_schema(schema, additional_response_included, "included.items")
-
-      schema
+      modify_schema(schema, additional_response_included, 'included.items')
     end
 
     # Generates the schema for the response of a resource or collection of resources in JSON API format.
@@ -451,18 +426,17 @@ module Schemable
     # @example
     #  "The returned schema will have a JSON API format, including the data (included attributes and relationships), included and meta keys."
     def response_schema(relations = try(:relationships), expand: false, exclude_from_expansion: [], multi: false, nested: false, metadata: { nested_relationships: try(:nested_relationships) })
-
       data = {
         type: :object,
         properties: {
           type: { type: :string, default: itself.class.model_name },
           id: { type: :string },
-          attributes: attributes_schema,
+          attributes: attributes_schema
         }.merge(
           if relations.blank? || relations == { belongs_to: {}, has_many: {} }
             {}
           else
-            { relationships: relationships_schema(relations, expand: expand, exclude_from_expansion: exclude_from_expansion) }
+            { relationships: relationships_schema(relations, expand:, exclude_from_expansion:) }
           end
         )
       }
@@ -476,26 +450,26 @@ module Schemable
                  }
                else
                  {
-                   data: data
+                   data:
                  }
                end
 
       schema.merge!(
         if nested && expand
-          included_schema(relations, expand: nested, exclude_from_expansion: exclude_from_expansion, metadata: metadata)
+          included_schema(relations, expand: nested, exclude_from_expansion:, metadata:)
         elsif !nested && expand
-          included_schema(relations, expand: nested, exclude_from_expansion: exclude_from_expansion)
+          included_schema(relations, expand: nested, exclude_from_expansion:)
         else
           {}
         end
       ).merge!(
-        if !expand
-          { meta: meta }
-        else
+        if expand
           {}
+        else
+          { meta: }
         end
       ).merge!(
-        jsonapi: jsonapi
+        jsonapi:
       )
 
       {
@@ -503,7 +477,6 @@ module Schemable
         properties: schema
       }
     end
-
 
     # Generates the schema for the creation request payload of a resource.
     #
@@ -535,7 +508,7 @@ module Schemable
         }
       }
 
-      schema = modify_schema(schema, additional_create_request_attributes, "properties.data.properties")
+      schema = modify_schema(schema, additional_create_request_attributes, 'properties.data.properties')
 
       excluded_create_request_attributes.each do |key|
         schema = modify_schema(schema, {}, "properties.data.properties.#{key}", delete: true)
@@ -545,11 +518,8 @@ module Schemable
         required: (schema.as_json['properties']['data']['properties'].keys - optional_create_request_attributes.map(&:to_s) - nullable_attributes.map(&:to_s)).map { |key| key.to_s.camelize(:lower).to_sym }
       }
 
-      schema = modify_schema(schema, required_attributes, "properties.data")
-
-      schema
+      modify_schema(schema, required_attributes, 'properties.data')
     end
-
 
     # Generates the schema for the update request payload of a resource.
     #
@@ -581,7 +551,7 @@ module Schemable
         }
       }
 
-      schema = modify_schema(schema, additional_update_request_attributes, "properties.data.properties")
+      schema = modify_schema(schema, additional_update_request_attributes, 'properties.data.properties')
 
       excluded_update_request_attributes.each do |key|
         schema = modify_schema(schema, {}, "properties.data.properties.#{key}", delete: true)
@@ -591,9 +561,7 @@ module Schemable
         required: (schema.as_json['properties']['data']['properties'].keys - optional_update_request_attributes.map(&:to_s) - nullable_attributes.map(&:to_s)).map { |key| key.to_s.camelize(:lower).to_sym }
       }
 
-      schema = modify_schema(schema, required_attributes, "properties.data")
-
-      schema
+      modify_schema(schema, required_attributes, 'properties.data')
     end
 
     # Returns the schema for the meta data of the response body.
@@ -640,7 +608,7 @@ module Schemable
         properties: {
           version: {
             type: :string,
-            default: "1.0"
+            default: '1.0'
           }
         }
       }
@@ -911,7 +879,7 @@ module Schemable
     # @example
     #  User
     def model
-      self.class.name.gsub("Swagger::Definitions::", '').constantize
+      self.class.name.gsub('Swagger::Definitions::', '').constantize
     end
 
     # Returns the model name. Used for schema type naming.
@@ -922,7 +890,7 @@ module Schemable
     #  'users' for the User model
     #  'citizen_applications' for the CitizenApplication model
     def self.model_name
-      name.gsub("Swagger::Definitions::", '').pluralize.underscore.downcase
+      name.gsub('Swagger::Definitions::', '').pluralize.underscore.downcase
     end
 
     # Returns the generated schemas in JSONAPI format that are used in the swagger documentation.
@@ -944,7 +912,7 @@ module Schemable
     # @note The method can be overridden in the definition class if there are any additional customizations needed.
     #
     def self.definitions
-      schema_instance = self.new
+      schema_instance = new
       [
         "#{schema_instance.model}CreateRequest": schema_instance.camelize_keys(schema_instance.create_request_schema),
         "#{schema_instance.model}UpdateRequest": schema_instance.camelize_keys(schema_instance.update_request_schema),

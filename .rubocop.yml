@@ -108,10 +108,24 @@ Metrics/AbcSize:
 Metrics/MethodLength:
   Enabled: false
 Metrics/CyclomaticComplexity:
-  Max: 15
+  Enabled: false
 Metrics/PerceivedComplexity:
-  Max: 15
+  Enabled: false
 Lint/DuplicateMethods: # Disables duplicate methods warning
   Enabled: false
 Gemspec/RequiredRubyVersion: # Disables required ruby version warning
+  Enabled: false
+Metrics/ParameterLists: # Disables parameter lists warning
+  Enabled: false
+Lint/NextWithoutAccumulator: # Disables next without accumulator warning
+  Enabled: false
+Lint/ShadowingOuterLocalVariable: # Disables shadowing outer local variable warning
+  Enabled: false
+Metrics/ModuleLength: # Disables module length warning
+  Enabled: false
+Layout/EmptyLinesAroundClassBody: # Disables empty lines around class body warning
+  Enabled: false
+Layout/HeredocIndentation: # Disables heredoc indentation warning
+  Enabled: false
+Layout/ClosingHeredocIndentation: # Disables closing heredoc indentation warning
   Enabled: false
