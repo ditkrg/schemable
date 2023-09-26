@@ -19,8 +19,8 @@ module Schemable
         text: { type: :string },
         string: { type: :string },
         integer: { type: :integer },
-        float: { type: :number, format: :float },
-        decimal: { type: :number, format: :double },
+        float: { type: (configs[:float_as_string] ? :string : :number).to_s.to_sym, format: :float },
+        decimal: { type: (configs[:decimal_as_string] ? :string : :number).to_s.to_sym, format: :double },
         datetime: { type: :string, format: :'date-time' },
         date: { type: :string, format: :date },
         time: { type: :string, format: :time },
@@ -931,6 +931,16 @@ module Schemable
     #  { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
     def camelize_keys(hash)
       hash.deep_transform_keys { |key| key.to_s.camelize(:lower).to_sym }
+    end
+
+    # Returns a json of config options for the definition class.
+    #
+    # @return [Hash] The config options for the definition class.
+    #
+    # @example
+    #  { decimal_as_string: true }
+    def configs
+      {}
     end
   end
 end
