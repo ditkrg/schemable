@@ -129,3 +129,7 @@ Layout/HeredocIndentation: # Disables heredoc indentation warning
   Enabled: false
 Layout/ClosingHeredocIndentation: # Disables closing heredoc indentation warning
   Enabled: false
+Rails/Output: # Disables rails output warning
+  Enabled: false
+Metrics/ClassLength: # Disables class length warning
+  Max: 150
