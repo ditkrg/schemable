@@ -1,6 +1,5 @@
 module Schemable
   class Configuration
-
     attr_accessor orm: Symbol
     attr_accessor timestamps: bool
     attr_accessor float_as_string: bool
@@ -14,9 +13,7 @@ module Schemable
 
 
     def initialize: -> void
-
-    def add_custom_type_mapper: (Symbol, Hash[Symbol, any]) -> void
-
     def type_mapper: (Symbol) -> Hash[Symbol, any]
+    def add_custom_type_mapper: (Symbol, Hash[Symbol, any]) -> void
   end
 end

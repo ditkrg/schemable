@@ -8,7 +8,6 @@ module Schemable
 
     def initialize: (Definition, Configuration) -> void
     def generate_attributes_schema: -> (Hash[Symbol, any] | Array[any])
-
     def generate_attribute_schema: (Symbol) -> Hash[Symbol, any]
   end
 end
