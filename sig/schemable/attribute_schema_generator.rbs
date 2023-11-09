@@ -1,0 +1,14 @@
+module Schemable
+  class AttributeSchemaGenerator
+    attr_accessor model: Class
+    attr_accessor model_definition: Definition
+    attr_accessor configuration: Configuration
+    attr_accessor response: Hash[Symbol, any]?
+    attr_accessor schema_modifier: SchemaModifier
+
+    def initialize: (Definition, Configuration) -> void
+    def generate_attribute_schema: -> Hash[Symbol, any]
+
+    def generate_property_schema: (Symbol) -> Hash[Symbol, any]
+  end
+end
