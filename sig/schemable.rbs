@@ -1,4 +1,6 @@
 module Schemable
   VERSION: String
-  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+  def generate_schemas: () -> Array[Hash[Symbol, Hash[Symbol, any]]]
+  def configure: () { (Configuration) -> Configuration } -> Configuration
+  attr_accessor configuration: Configuration
 end
