@@ -1,0 +1,42 @@
+# == SchemaModifier
+#
+# This module provides methods for working with Hash/JSON-like schemas.
+# It includes methods to parse paths, check if a path exists in a schema,
+# deep merge two hashes or an array and a hash, add properties to a specific
+# location in a schema, and delete properties at a specified path.
+#
+# === Examples
+#
+#   schema_modifier = Schemable::SchemaModifier.new
+#
+#   path = "properties.name.items.[0].properties.age"
+#   parsed_path = schema_modifier.parse_path(path)
+#   # => [:properties, :name, :items, :'[0]', :properties, :age]
+#
+#   schema = { properties: { name: "John" } }
+#   exists = schema_modifier.path_exists?(schema, "properties.name")
+#   # => true
+#
+#   new_data = { age: 25 }
+#   merged_data = schema_modifier.deep_merge_hashes({ name: "John" }, new_data)
+#   # => { name: "John", age: 25 }
+#
+#   original_schema = { properties: { name: "John" } }
+#   new_schema = { age: 25 }
+#   updated_schema = schema_modifier.add_properties(original_schema, new_schema, "properties")
+#   # => { properties: { name: "John", age: 25 } }
+#
+#   schema = { properties: { name: "John", age: 25 } }
+#   path_to_delete = "properties.name.age"
+#   updated_schema = schema_modifier.delete_properties(schema, path_to_delete)
+#   # => { properties: { name: "John" } }
+#
+module Schemable
+  class SchemaModifier
+    def parse_path: (path: String) -> Array[Symbol]
+    def path_exists?: (schema: Hash[Symbol, any], path: String) -> bool
+    def deep_merge_hashes: (destination: Hash[Symbol, any], new_data: Hash[Symbol, any]) -> (Hash[Symbol, any] | Array[any])
+    def add_properties: (original_schema: (Hash[Symbol, any] | Array[any]), new_schema: Hash[Symbol, any], path: String) -> (Hash[Symbol, any] | Array[any])
+    def delete_properties: (original_schema: (Hash[Symbol, any] | Array[any]), path: String) -> (Hash[Symbol, any] | Array[any])
+  end
+end
