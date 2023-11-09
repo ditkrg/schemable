@@ -1,0 +1,5 @@
+module Schemable
+  class Definition
+    def serializer: -> untyped
+  end
+end
