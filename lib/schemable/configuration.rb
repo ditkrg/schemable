@@ -8,6 +8,7 @@ module Schemable
       :decimal_as_string,
       :custom_type_mappers,
       :disable_factory_bot,
+      :use_serialized_instance,
       :custom_defined_enum_method
     )
 
@@ -19,6 +20,7 @@ module Schemable
       @decimal_as_string = false
       @disable_factory_bot = true
       @custom_defined_enum_method = nil
+      @use_serialized_instance = false
     end
 
     def type_mapper(type_name)
