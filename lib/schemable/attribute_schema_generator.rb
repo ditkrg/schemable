@@ -14,7 +14,7 @@ module Schemable
     def generate_attributes_schema
       schema = {
         type: :object,
-        properties: attributes.index_with do |attr|
+        properties: @model_definition.attributes&.index_with do |attr|
           generate_attribute_schema(attr)
         end
       }
