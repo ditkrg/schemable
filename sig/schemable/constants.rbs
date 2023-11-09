@@ -1,0 +1,5 @@
+module Schemable
+  module Constants
+    TYPES_MAP: Hash[Symbol, Symbol | Object]
+  end
+end
