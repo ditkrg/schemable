@@ -18,7 +18,9 @@ module Schemable
     #  V1::UserSerializer
     #
     def serializer
-      raise NotImplementedError, 'serializer method must be implemented in the definition class'
+      raise NotImplementedError, 'You must implement the serializer method in the definition class in order to use the infer_serializer_from_jsonapi_serializable configuration option.' if configuration.infer_attributes_from_jsonapi_serializable
+
+      nil
     end
 
     # Returns the attributes defined in the serializer (Auto generated from the serializer).
@@ -28,7 +30,11 @@ module Schemable
     # @example
     #  [:id, :name, :email, :created_at, :updated_at]
     def attributes
-      serializer.attribute_blocks.transform_keys { |key| key.to_s.underscore.to_sym }.keys || nil
+      return (serializer&.attribute_blocks&.transform_keys { |key| key.to_s.underscore.to_sym }&.keys || nil) if configuration.infer_attributes_from_jsonapi_serializable
+
+      return model.send(configuration.infer_attributes_from_custom_method).map(&:to_sym) if configuration.infer_attributes_from_custom_method
+
+      model.attribute_names
     end
 
     # Returns the relationships defined in the serializer.
@@ -271,7 +277,7 @@ module Schemable
     # @example
     #  User
     def model
-      self.class.name.gsub('Swagger::Definitions::', '').gsub(':Class', '').constantize
+      self.class.name.gsub('Swagger::Definitions::', '').constantize
     end
 
     def serialized_instance

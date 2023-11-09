@@ -8,7 +8,9 @@ module Schemable
       :custom_type_mappers,
       :disable_factory_bot,
       :use_serialized_instance,
-      :custom_defined_enum_method
+      :custom_defined_enum_method,
+      :infer_attributes_from_custom_method,
+      :infer_attributes_from_jsonapi_serializable
     )
 
     def initialize
@@ -18,8 +20,10 @@ module Schemable
       @custom_type_mappers = {}
       @decimal_as_string = false
       @disable_factory_bot = true
-      @custom_defined_enum_method = nil
       @use_serialized_instance = false
+      @custom_defined_enum_method = nil
+      @infer_attributes_from_custom_method = nil
+      @infer_attributes_from_jsonapi_serializable = false
     end
 
     def type_mapper(type_name)

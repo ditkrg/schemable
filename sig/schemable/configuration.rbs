@@ -1,5 +1,6 @@
 module Schemable
   class Configuration
+
     attr_accessor orm: Symbol
     attr_accessor timestamps: bool
     attr_accessor float_as_string: bool
@@ -8,6 +9,8 @@ module Schemable
     attr_accessor use_serialized_instance: bool
     attr_accessor custom_defined_enum_method: Symbol?
     attr_accessor custom_type_mappers: Hash[Symbol, any]
+    attr_accessor infer_attributes_from_jsonapi_serializable: bool
+    attr_accessor infer_attributes_from_custom_method: Symbol?
 
 
     def initialize: -> void
