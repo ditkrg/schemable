@@ -7,7 +7,8 @@ module Schemable
       :float_as_string,
       :decimal_as_string,
       :custom_type_mappers,
-      :disable_factory_bot
+      :disable_factory_bot,
+      :custom_defined_enum_method
     )
 
     def initialize
@@ -17,6 +18,7 @@ module Schemable
       @custom_type_mappers = {}
       @decimal_as_string = false
       @disable_factory_bot = true
+      @custom_defined_enum_method = nil
     end
 
     def type_mapper(type_name)
