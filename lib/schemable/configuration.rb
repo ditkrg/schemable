@@ -1,4 +1,3 @@
-# configuration.rb
 module Schemable
   class Configuration
     attr_accessor(
@@ -26,7 +25,43 @@ module Schemable
     def type_mapper(type_name)
       return @custom_type_mappers[type_name] if @custom_type_mappers.key?(type_name)
 
-      TYPES_MAP[type_name.try(:to_sym)]
+      {
+        text: { type: :string },
+        string: { type: :string },
+        integer: { type: :integer },
+        boolean: { type: :boolean },
+        date: { type: :string, format: :date },
+        time: { type: :string, format: :time },
+        json: { type: :object, properties: {} },
+        hash: { type: :object, properties: {} },
+        jsonb: { type: :object, properties: {} },
+        object: { type: :object, properties: {} },
+        binary: { type: :string, format: :binary },
+        trueclass: { type: :boolean, default: true },
+        falseclass: { type: :boolean, default: false },
+        datetime: { type: :string, format: :'date-time' },
+        float: {
+          type: (@float_as_string ? :string : :number).to_s.to_sym,
+          format: :float
+        },
+        decimal: {
+          type: (@decimal_as_string ? :string : :number).to_s.to_sym,
+          format: :double
+        },
+        array: {
+          type: :array,
+          items: {
+            anyOf: [
+              { type: :string },
+              { type: :integer },
+              { type: :boolean },
+              { type: :number, format: :float },
+              { type: :object, properties: {} },
+              { type: :number, format: :double }
+            ]
+          }
+        }
+      }[type_name.try(:to_sym)]
     end
 
     def add_custom_type_mapper(type_name, mapping)
