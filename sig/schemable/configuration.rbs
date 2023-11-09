@@ -1,0 +1,17 @@
+module Schemable
+  class Configuration
+    attr_accessor disable_factory_bot: untyped
+    attr_accessor orm: Symbol
+    attr_accessor timestamps: bool
+    attr_accessor float_as_string: bool
+    attr_accessor decimal_as_string: bool
+    attr_accessor disable_factory_bot: bool
+    attr_accessor custom_type_mappers: Hash[Symbol, Symbol | Object]
+
+    def initialize: -> void
+
+    def add_custom_type_mapper: (Symbol, Hash[Symbol, Symbol | Object]) -> void
+
+    def type_mapper: (Symbol) -> Hash[Symbol, Symbol | Object]
+  end
+end
