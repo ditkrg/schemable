@@ -11,21 +11,27 @@ module Schemable
     end
 
     # Generate the JSON schema for attributes
-    def generate_attribute_schema
+    def generate_attributes_schema
       schema = {
         type: :object,
-        properties: {}
+        properties: attributes.index_with do |attr|
+          generate_attribute_schema(attr)
+        end
       }
 
-      @model.attribute_names.each do |attribute|
-        schema[:properties][attribute.to_sym] = generate_property_schema(attribute)
+      # modify the schema to include additional response relations
+      schema = @schema_modifier.add_properties(schema, @model_definition.additional_response_attributes, 'properties')
+
+      # modify the schema to exclude response relations
+      @model_definition.excluded_response_attributes.each do |key|
+        schema = @schema_modifier.delete_properties(schema, "properties.#{key}")
       end
 
       schema
     end
 
     # Generate the JSON schema for a specific attribute
-    def generate_property_schema(attribute)
+    def generate_attribute_schema(attribute)
       if @configuration.orm == :mongoid
         # Get the column hash for the attribute
         attribute_hash = @model.fields[attribute.to_s]

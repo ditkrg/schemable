@@ -7,8 +7,8 @@ module Schemable
     attr_accessor schema_modifier: SchemaModifier
 
     def initialize: (Definition, Configuration) -> void
-    def generate_attribute_schema: -> Hash[Symbol, any]
+    def generate_attributes_schema: -> (Hash[Symbol, any] | Array[any])
 
-    def generate_property_schema: (Symbol) -> Hash[Symbol, any]
+    def generate_attribute_schema: (Symbol) -> Hash[Symbol, any]
   end
 end
