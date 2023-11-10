@@ -2,10 +2,10 @@ module Schemable
   class AttributeSchemaGenerator
     attr_accessor :model_definition, :configuration, :model, :schema_modifier, :response
 
-    def initialize(model_definition, configuration)
+    def initialize(model_definition)
       @model_definition = model_definition
       @model = model_definition.model
-      @configuration = configuration
+      @configuration = Schemable.configuration
       @schema_modifier = SchemaModifier.new
       @response = nil
     end
@@ -14,7 +14,7 @@ module Schemable
     def generate_attributes_schema
       schema = {
         type: :object,
-        properties: @model_definition.attributes&.index_with do |attr|
+        properties: @model_definition.attributes.index_with do |attr|
           generate_attribute_schema(attr)
         end
       }

@@ -6,7 +6,7 @@ module Schemable
     attr_accessor response: Hash[Symbol, any]?
     attr_accessor schema_modifier: SchemaModifier
 
-    def initialize: (Definition, Configuration) -> void
+    def initialize: (Definition) -> void
     def generate_attributes_schema: -> (Hash[Symbol, any] | Array[any])
     def generate_attribute_schema: (Symbol) -> Hash[Symbol, any]
   end
