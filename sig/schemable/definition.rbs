@@ -246,6 +246,6 @@ module Schemable
     # @example
     #  'users' for the User model
     #  'citizen_applications' for the CitizenApplication model
-    def self.model_name: -> String
+    def model_name: -> String
   end
 end

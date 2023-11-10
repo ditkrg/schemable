@@ -92,8 +92,8 @@ module Schemable
       self.class.name.gsub('Swagger::Definitions::', '').constantize
     end
 
-    def self.model_name
-      name.gsub('Swagger::Definitions::', '').pluralize.underscore.downcase
+    def model_name
+      self.class.name.gsub('Swagger::Definitions::', '').pluralize.underscore.downcase
     end
   end
 end
