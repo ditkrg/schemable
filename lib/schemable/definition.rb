@@ -2,8 +2,8 @@ module Schemable
   class Definition
     attr_reader :configuration
 
-    def initialize(configuration)
-      @configuration = configuration
+    def initialize
+      @configuration = Schemable.configuration
     end
 
     def serializer

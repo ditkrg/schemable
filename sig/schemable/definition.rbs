@@ -3,7 +3,7 @@ module Schemable
     attr_accessor configuration: Configuration
 
     # Initializes the definition with the configuration.
-    def initialize: (Configuration) -> void
+    def initialize: -> void
 
     # Returns the attributes that are nullable in the request/response body. This means that they can be present in the request/response body but they can be null.
     # They are not required to be present in the request body.
