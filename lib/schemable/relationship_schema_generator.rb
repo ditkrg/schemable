@@ -1,17 +1,14 @@
 module Schemable
   class RelationshipSchemaGenerator
-    attr_accessor :model_definition, :schema_modifier, :configuration, :relationships, :expand, :relationships_to_exclude_from_expansion
+    attr_accessor :model_definition, :schema_modifier, :relationships
 
-    def initialize(model_definition, relationships_to_exclude_from_expansion: [], expand: false)
-      @expand = expand
+    def initialize(model_definition)
       @model_definition = model_definition
       @schema_modifier = SchemaModifier.new
-      @configuration = Schemable.configuration
       @relationships = model_definition.relationships
-      @relationships_to_exclude_from_expansion = relationships_to_exclude_from_expansion
     end
 
-    def generate
+    def generate(relationships_to_exclude_from_expansion: [], expand: false)
       return {} if @relationships.blank? || @relationships == { belongs_to: {}, has_many: {} }
 
       schema = {
@@ -35,7 +32,7 @@ module Schemable
 
           result = relation_type == :belongs_to ? generate_schema(definition.model_name) : generate_schema(definition.model_name, collection: true)
 
-          result = non_expanded_data_properties if !expand || @relationships_to_exclude_from_expansion.include?(definition.model_name)
+          result = non_expanded_data_properties if !expand || relationships_to_exclude_from_expansion.include?(definition.model_name)
 
           schema[:properties].merge!(relation => result)
         end

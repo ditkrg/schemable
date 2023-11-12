@@ -1,14 +1,11 @@
 module Schemable
   class IncludedSchemaGenerator
-    attr_accessor :model_definition, :schema_modifier, :configuration, :relationships, :expand, :relationships_to_exclude_from_expansion
+    attr_accessor :model_definition, :schema_modifier, :relationships
 
-    def initialize(model_definition, relationships_to_exclude_from_expansion: [], expand: false)
-      @expand = expand
+    def initialize(model_definition)
       @model_definition = model_definition
       @schema_modifier = SchemaModifier.new
-      @configuration = Schemable.configuration
       @relationships = @model_definition.relationships
-      @relationships_to_exclude_from_expansion = relationships_to_exclude_from_expansion
     end
 
     def generate(expand: false, relationships_to_exclude_from_expansion: [])
@@ -56,7 +53,7 @@ module Schemable
 
     def prepare_schema_for_included(model_definition, expand: false, relationships_to_exclude_from_expansion: [])
       attributes_schema = AttributeSchemaGenerator.new(model_definition).generate
-      relationships_schema = RelationshipSchemaGenerator.new(model_definition, relationships_to_exclude_from_expansion:, expand:)
+      relationships_schema = RelationshipSchemaGenerator.new(model_definition).generate(relationships_to_exclude_from_expansion:, expand:)
 
       {
         type: :object,

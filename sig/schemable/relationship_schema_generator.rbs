@@ -1,15 +1,12 @@
 module Schemable
   class RelationshipSchemaGenerator
-    attr_accessor expand: bool
     attr_accessor model_definition: Definition
-    attr_accessor configuration: Configuration
     attr_accessor schema_modifier: SchemaModifier
     attr_accessor relationships: Hash[Symbol, any]
-    attr_accessor relationships_to_exclude_from_expansion: Array[String]
 
-    def initialize: (Definition, ?relationships_to_exclude_from_expansion: Array[String], ?expand: bool) -> void
+    def initialize: (Definition) -> void
 
-    def generate: -> (Hash[Symbol, any] | Array[Hash[Symbol, any]])
+    def generate: (?relationships_to_exclude_from_expansion: Array[String], ?expand: bool) -> (Hash[Symbol, any] | Array[Hash[Symbol, any]])
 
     def generate_schema: (String, ?collection: bool) -> Hash[Symbol, any]
   end

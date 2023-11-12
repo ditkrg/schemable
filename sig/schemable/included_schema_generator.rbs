@@ -7,7 +7,7 @@ module Schemable
     attr_accessor relationships: Hash[Symbol, any]
     attr_accessor relationships_to_exclude_from_expansion: Array[String]
 
-    def initialize: (Definition, ?relationships_to_exclude_from_expansion: Array[String], ?expand: bool) -> void
+    def initialize: (Definition) -> void
 
     def prepare_schema_for_included: (Definition, ?relationships_to_exclude_from_expansion: Array[String], ?expand: bool) -> Hash[Symbol, any]
 
