@@ -31,10 +31,10 @@ module Schemable
         @schema_modifier.add_properties(schema, included_schema, '.')
       end
 
-      @schema_modifier.add_properties(schema, meta, '.') if collection
-      @schema_modifier.add_properties(schema, jsonapi, '.')
+      @schema_modifier.add_properties(schema, { meta: }, '.') if collection
+      @schema_modifier.add_properties(schema, { jsonapi: }, '.')
 
-      { type: :object, properties: schema }
+      { type: :object, properties: schema }.compact_blank
     end
 
     def meta
