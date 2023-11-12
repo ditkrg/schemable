@@ -21,14 +21,15 @@ module Schemable
       end
 
       definitions.flatten!
-      definition_names = definitions.map(&:model_name)
 
       included_schemas = definitions.map do |definition|
-        if expand && relationships_to_exclude_from_expansion.exclude?(definition.model_name)
-          definition_relations = definition.relationships[:belongs_to].keys.map(&:to_s) + definition.relationships[:has_many].keys.map(&:to_s)
+        next if relationships_to_exclude_from_expansion.include?(definition.model_name)
+
+        if expand
+          definition_relations = definition.relationships[:belongs_to].values.map(&:model_name) + definition.relationships[:has_many].values.map(&:model_name)
           relations_to_exclude = []
           definition_relations.each do |relation|
-            relations_to_exclude << relation if definition_names.exclude?(relation)
+            relations_to_exclude << relation if relationships_to_exclude_from_expansion.include?(relation)
           end
 
           prepare_schema_for_included(definition, expand:, relationships_to_exclude_from_expansion: relations_to_exclude)
@@ -41,7 +42,7 @@ module Schemable
         included: {
           type: :array,
           items: {
-            anyOf: included_schemas
+            anyOf: included_schemas.compact_blank
           }
         }
       }
