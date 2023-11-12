@@ -33,20 +33,9 @@ module Schemable
             }
           }
 
-          result = {
-            type: :object,
-            properties: {
-              data: {
-                type: :object,
-                properties: {
-                  id: { type: :string },
-                  type: { type: :string, default: definition[:definition].model_name }
-                }
-              }
-            }
-          }
+          result = relation_type == :belongs_to ? generate_schema(definition.model_name) : generate_schema(definition.model_name, collection: true)
 
-          result = non_expanded_data_properties if !expand || @relationships_to_exclude_from_expansion.include?(definition[:definition].model_name)
+          result = non_expanded_data_properties if !expand || @relationships_to_exclude_from_expansion.include?(definition.model_name)
 
           schema[:properties].merge!(relation => result)
         end
@@ -61,6 +50,39 @@ module Schemable
       end
 
       schema
+    end
+
+    def generate_schema(type_name, collection: false)
+      if collection
+        {
+          type: :object,
+          properties: {
+            data: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :string },
+                  type: { type: :string, default: type_name }
+                }
+              }
+            }
+          }
+        }
+      else
+        {
+          type: :object,
+          properties: {
+            data: {
+              type: :object,
+              properties: {
+                id: { type: :string },
+                type: { type: :string, default: type_name }
+              }
+            }
+          }
+        }
+      end
     end
   end
 end
