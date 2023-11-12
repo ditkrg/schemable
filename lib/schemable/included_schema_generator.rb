@@ -60,9 +60,8 @@ module Schemable
         properties: {
           type: { type: :string, default: model_definition.model_name },
           id: { type: :string },
-          attributes: attributes_schema,
-          relationships: relationships_schema ? {} : relationships_schema
-        }
+          attributes: attributes_schema
+        }.merge!(relationships_schema.blank? ? {} : { relationships: relationships_schema })
       }.compact_blank
     end
   end
