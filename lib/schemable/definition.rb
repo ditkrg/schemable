@@ -95,5 +95,9 @@ module Schemable
     def model_name
       self.class.name.gsub('Swagger::Definitions::', '').pluralize.underscore.downcase
     end
+
+    def camelize_keys(hash)
+      hash.deep_transform_keys { |key| key.to_s.camelize(:lower).to_sym }
+    end
   end
 end

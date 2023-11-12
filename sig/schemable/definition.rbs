@@ -247,5 +247,15 @@ module Schemable
     #  'users' for the User model
     #  'citizen_applications' for the CitizenApplication model
     def model_name: -> String
+
+    # Given a hash, it returns a new hash with all the keys camelized.
+    #
+    # @param hash [Array | Hash] The hash with all the keys camelized.
+    #
+    # @return [Array | Hash] The hash with all the keys camelized.
+    #
+    # @example
+    #  { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
+    def camelize_keys: (Hash[Symbol, any]) -> (Hash[Symbol, any] | Array[Hash[Symbol, any]])
   end
 end
