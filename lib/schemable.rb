@@ -8,6 +8,7 @@ require_relative 'schemable/attribute_schema_generator'
 require_relative 'schemable/response_schema_generator'
 require_relative 'schemable/relationship_schema_generator'
 require_relative 'schemable/included_schema_generator'
+require_relative 'schemable/request_schema_generator'
 
 module Schemable
   class Error < StandardError; end
