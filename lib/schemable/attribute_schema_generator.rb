@@ -11,7 +11,7 @@ module Schemable
     end
 
     # Generate the JSON schema for attributes
-    def generate_attributes_schema
+    def generate
       schema = {
         type: :object,
         properties: @model_definition.attributes.index_with do |attr|

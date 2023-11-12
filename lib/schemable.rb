@@ -25,7 +25,7 @@ module Schemable
 
       klasses.each do |klass|
         model_definition = klass.new
-        schema = AttributeSchemaGenerator.new(model_definition).generate_attributes_schema
+        schema = AttributeSchemaGenerator.new(model_definition).generate
         generated_schemas << schema
       end
 

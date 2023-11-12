@@ -11,21 +11,6 @@ module Schemable
       @relationships_to_exclude_from_expansion = relationships_to_exclude_from_expansion
     end
 
-    def prepare_schema_for_included(model_definition, expand: false, relationships_to_exclude_from_expansion: [])
-      attributes_schema = AttributeSchemaGenerator.new(model_definition).generate_attributes_schema
-      relationships_schema = RelationshipSchemaGenerator.new(model_definition, relationships_to_exclude_from_expansion:, expand:)
-
-      {
-        type: :object,
-        properties: {
-          type: { type: :string, default: model_definition.model_name },
-          id: { type: :string },
-          attributes: attributes_schema,
-          relationships: relationships_schema ? {} : relationships_schema
-        }
-      }.compact_blank
-    end
-
     def generate(expand: false, relationships_to_exclude_from_expansion: [])
       return {} if @relationships.blank?
       return {} if @relationships == { belongs_to: {}, has_many: {} }
@@ -67,6 +52,21 @@ module Schemable
       @schema_modifier.add_properties(schema, @model_definition.additional_response_included, 'included.items') if @model_definition.additional_response_included.present?
 
       schema
+    end
+
+    def prepare_schema_for_included(model_definition, expand: false, relationships_to_exclude_from_expansion: [])
+      attributes_schema = AttributeSchemaGenerator.new(model_definition).generate
+      relationships_schema = RelationshipSchemaGenerator.new(model_definition, relationships_to_exclude_from_expansion:, expand:)
+
+      {
+        type: :object,
+        properties: {
+          type: { type: :string, default: model_definition.model_name },
+          id: { type: :string },
+          attributes: attributes_schema,
+          relationships: relationships_schema ? {} : relationships_schema
+        }
+      }.compact_blank
     end
   end
 end
