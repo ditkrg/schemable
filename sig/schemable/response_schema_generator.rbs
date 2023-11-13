@@ -1,8 +1,8 @@
 module Schemable
   class ResponseSchemaGenerator
-    attr_accessor model: Class
-    attr_accessor model_definition: Definition
-    attr_accessor schema_modifier: SchemaModifier
+    attr_reader model: Class
+    attr_reader model_definition: Definition
+    attr_reader schema_modifier: SchemaModifier
 
     def initialize: (Definition) -> void
     def meta: -> Hash[Symbol, any]

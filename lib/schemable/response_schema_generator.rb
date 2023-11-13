@@ -1,6 +1,6 @@
 module Schemable
   class ResponseSchemaGenerator
-    attr_accessor :model_definition, :model
+    attr_reader :model_definition, :model, :schema_modifier
 
     def initialize(model_definition)
       @model_definition = model_definition

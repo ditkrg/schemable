@@ -1,11 +1,8 @@
 module Schemable
   class IncludedSchemaGenerator
-    attr_accessor expand: bool
-    attr_accessor model_definition: Definition
-    attr_accessor configuration: Configuration
-    attr_accessor schema_modifier: SchemaModifier
-    attr_accessor relationships: Hash[Symbol, any]
-    attr_accessor relationships_to_exclude_from_expansion: Array[String]
+    attr_reader model_definition: Definition
+    attr_reader schema_modifier: SchemaModifier
+    attr_reader relationships: Hash[Symbol, any]
 
     def initialize: (Definition) -> void
 

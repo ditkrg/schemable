@@ -1,6 +1,6 @@
 module Schemable
   class RelationshipSchemaGenerator
-    attr_accessor :model_definition, :schema_modifier, :relationships
+    attr_reader :model_definition, :schema_modifier, :relationships
 
     def initialize(model_definition)
       @model_definition = model_definition

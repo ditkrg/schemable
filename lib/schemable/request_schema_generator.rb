@@ -1,6 +1,6 @@
 module Schemable
   class RequestSchemaGenerator
-    attr_accessor :model_definition, :schema_modifier
+    attr_reader :model_definition, :schema_modifier
 
     def initialize(model_definition)
       @model_definition = model_definition

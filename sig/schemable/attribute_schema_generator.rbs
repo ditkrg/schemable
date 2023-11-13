@@ -1,10 +1,10 @@
 module Schemable
   class AttributeSchemaGenerator
-    attr_accessor model: Class
-    attr_accessor model_definition: Definition
-    attr_accessor configuration: Configuration
-    attr_accessor response: Hash[Symbol, any]?
-    attr_accessor schema_modifier: SchemaModifier
+    attr_reader model: Class
+    attr_reader model_definition: Definition
+    attr_reader configuration: Configuration
+    attr_reader response: Hash[Symbol, any]?
+    attr_reader schema_modifier: SchemaModifier
 
     def initialize: (Definition) -> void
     def generate: -> (Hash[Symbol, any] | Array[any])

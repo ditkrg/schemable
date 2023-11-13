@@ -1,7 +1,7 @@
 module Schemable
   class RequestSchemaGenerator
-    attr_accessor model_definition: Definition
-    attr_accessor schema_modifier: SchemaModifier
+    attr_reader model_definition: Definition
+    attr_reader schema_modifier: SchemaModifier
 
     def initialize: (Definition) -> void
     def generate_for_create: () -> (Hash[Symbol, any] | Array[Hash[Symbol, any]])

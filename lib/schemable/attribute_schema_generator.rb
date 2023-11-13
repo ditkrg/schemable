@@ -1,6 +1,6 @@
 module Schemable
   class AttributeSchemaGenerator
-    attr_accessor :model_definition, :configuration, :model, :schema_modifier, :response
+    attr_reader :model_definition, :configuration, :model, :schema_modifier, :response
 
     def initialize(model_definition)
       @model_definition = model_definition
