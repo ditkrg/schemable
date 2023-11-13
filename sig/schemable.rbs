@@ -1,6 +1,7 @@
 module Schemable
   VERSION: String
-  def generate_schemas: () -> Array[Hash[Symbol, Hash[Symbol, any]]]
-  def configure: () { (Configuration) -> Configuration } -> Configuration
+
   attr_accessor configuration: Configuration
+
+  def configure: () { (Configuration) -> Configuration } -> Configuration
 end
