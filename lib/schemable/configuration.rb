@@ -9,8 +9,10 @@ module Schemable
       :disable_factory_bot,
       :use_serialized_instance,
       :custom_defined_enum_method,
+      :enum_prefix_for_simple_enum,
+      :enum_suffix_for_simple_enum,
       :infer_attributes_from_custom_method,
-      :infer_attributes_from_jsonapi_serializable
+      :infer_attributes_from_jsonapi_serializable,
     )
 
     def initialize
@@ -22,6 +24,8 @@ module Schemable
       @disable_factory_bot = true
       @use_serialized_instance = false
       @custom_defined_enum_method = nil
+      @enum_prefix_for_simple_enum = nil
+      @enum_suffix_for_simple_enum = nil
       @infer_attributes_from_custom_method = nil
       @infer_attributes_from_jsonapi_serializable = false
     end
@@ -32,6 +36,7 @@ module Schemable
       {
         text: { type: :string },
         string: { type: :string },
+        symbol: { type: :string },
         integer: { type: :integer },
         boolean: { type: :boolean },
         date: { type: :string, format: :date },
@@ -44,6 +49,11 @@ module Schemable
         trueclass: { type: :boolean, default: true },
         falseclass: { type: :boolean, default: false },
         datetime: { type: :string, format: :'date-time' },
+        big_decimal: { type: (@decimal_as_string ? :string : :number).to_s.to_sym, format: :double },
+        'bson/objectid': { type: :string, format: :object_id },
+        'mongoid/boolean': { type: :boolean },
+        'mongoid/stringified_symbol': { type: :string },
+        'active_support/time_with_zone': { type: :string, format: :date_time },
         float: {
           type: (@float_as_string ? :string : :number).to_s.to_sym,
           format: :float
@@ -65,7 +75,7 @@ module Schemable
             ]
           }
         }
-      }[type_name.try(:to_sym)]
+      }[type_name.to_s.underscore.try(:to_sym)]
     end
 
     def add_custom_type_mapper(type_name, mapping)
