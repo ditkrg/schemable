@@ -1,6 +1,7 @@
 module Schemable
   class Definition
     attr_reader :configuration
+    attr_writer :relationships, :additional_create_request_attributes, :additional_update_request_attributes
 
     def initialize
       @configuration = Schemable.configuration
@@ -17,7 +18,7 @@ module Schemable
 
       return model.send(configuration.infer_attributes_from_custom_method).map(&:to_sym) if configuration.infer_attributes_from_custom_method
 
-      model.attribute_names
+      model.attribute_names.map(&:to_sym)
     end
 
     def relationships
