@@ -260,5 +260,7 @@ module Schemable
     # @example
     #  { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
     def camelize_keys: (Hash[Symbol, any]) -> (Hash[Symbol, any] | Array[Hash[Symbol, any]])
+
+    def self.generate: -> Array[Hash[Symbol, any]]
   end
 end

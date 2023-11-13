@@ -100,5 +100,16 @@ module Schemable
     def camelize_keys(hash)
       hash.deep_transform_keys { |key| key.to_s.camelize(:lower).to_sym }
     end
+
+    def self.generate
+      instance = new
+
+      [
+        "#{instance.model}CreateRequest": instance.camelize_keys(RequestSchemaGenerator.new(instance).generate_for_create),
+        "#{instance.model}UpdateRequest": instance.camelize_keys(RequestSchemaGenerator.new(instance).generate_for_update),
+        "#{instance.model}Response": instance.camelize_keys(ResponseSchemaGenerator.new(instance).generate(collection: true)),
+        "#{instance.model}ResponseExpanded": instance.camelize_keys(ResponseSchemaGenerator.new(instance).generate(expand: true))
+      ]
+    end
   end
 end
