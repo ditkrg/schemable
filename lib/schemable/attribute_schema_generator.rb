@@ -19,6 +19,13 @@ module Schemable
         end
       }
 
+      # Rename enum attributes to remove the suffix or prefix if mongoid is used
+      if @configuration.orm == :mongoid
+        schema[:properties].transform_keys! do |key|
+          key.to_s.gsub(@configuration.enum_prefix_for_simple_enum || @configuration.enum_suffix_for_simple_enum, '')
+        end
+      end
+
       # modify the schema to include additional response relations
       schema = @schema_modifier.add_properties(schema, @model_definition.additional_response_attributes, 'properties')
 
@@ -43,8 +50,13 @@ module Schemable
         # Check if this is an array attribute
         return @configuration.type_mapper(:array) if attribute_hash.try(:[], 'options').try(:[], 'type') == 'Array'
 
-        # Map the column type to a JSON Schema type if none of the above conditions are met
-        @response = @configuration.type_mapper(attribute_hash.try(:type).to_s.downcase.to_sym)
+        # Check if this is an enum attribute
+        @response = if attribute_hash.name.end_with?('_cd')
+                      @configuration.type_mapper(:string)
+                    else
+                      # Map the column type to a JSON Schema type if none of the above conditions are met
+                      @configuration.type_mapper(attribute_hash.try(:type).to_s.downcase.to_sym)
+                    end
 
       elsif @configuration.orm == :active_record
         # Get the column hash for the attribute
@@ -68,8 +80,10 @@ module Schemable
       return @schema_modifier.add_properties(@response, { nullable: true }, '.') if @response && @model_definition.nullable_attributes.include?(attribute)
 
       # If attribute is an enum, modify the schema accordingly
-      if @configuration.custom_defined_enum_method
-        return @schema_modifier.add_properties(@response, { enum: @model.send(@configuration.custom_defined_enum_method, attribute.to_s) }, '.') if @response && @model.respond_to?(@configuration.custom_defined_enum_method)
+      if @configuration.custom_defined_enum_method && @model.respond_to?(@configuration.custom_defined_enum_method)
+        defined_enums = @model.send(@configuration.custom_defined_enum_method)
+        enum_attribute = attribute.to_s.gsub(@configuration.enum_prefix_for_simple_enum || @configuration.enum_suffix_for_simple_enum, '').to_s
+        return @schema_modifier.add_properties(@response, { enum: defined_enums[enum_attribute].keys }, '.') if @response && defined_enums[enum_attribute].present?
       elsif @model.respond_to?(:defined_enums)
         return @schema_modifier.add_properties(@response, { enum: @model.defined_enums[attribute.to_s].keys }, '.') if @response && @model.defined_enums.key?(attribute.to_s)
       end
