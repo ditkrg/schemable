@@ -1,6 +1,9 @@
 module Schemable
   class Definition
-    attr_accessor configuration: Configuration
+    attr_reader configuration: Configuration
+    attr_writer relationships: Hash[Symbol, any]
+    attr_writer additional_create_request_attributes: Hash[Symbol, any]
+    attr_writer additional_update_request_attributes: Hash[Symbol, any]
 
     # Initializes the definition with the configuration.
     def initialize: -> void
