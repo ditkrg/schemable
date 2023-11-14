@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    schemable (0.1.4)
+    schemable (1.0.0)
       factory_bot_rails (~> 6.2.0)
       jsonapi-rails (~> 0.4.1)
 
