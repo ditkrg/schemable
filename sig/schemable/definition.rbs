@@ -139,29 +139,7 @@ module Schemable
     #  This method is not used anywhere yet.
     def excluded_response_included: -> Array[Symbol]
 
-    # Returns the relationships to be further expanded in the response schema.
-    #
-    # @return [Hash] The relationships to be further expanded in the response schema.
-    #
-    # @example
-    #  {
-    #    applicants: {
-    #      belongs_to: {
-    #        district: Swagger::Definitions::District,
-    #        province: Swagger::Definitions::Province,
-    #      },
-    #      has_many: {
-    #        attachments: Swagger::Definitions::Upload,
-    #      }
-    #    }
-    #  }
-    def nested_relationships: -> Hash[Symbol, any]
-
-    # Returns the resource serializer to be used for serialization. This method must be implemented in the definition class.
-    #
-    # @abstract This method must be implemented in the definition class.
-    #
-    # @raise [NotImplementedError] If the method is not implemented in the definition class.
+    # Returns the resource serializer to be used for serialization.
     #
     # @return [Class] The resource serializer class.
     #
@@ -182,7 +160,9 @@ module Schemable
     # @return [Hash] The relationships defined in the serializer.
     #
     # @note Note that the format of the relationships is as follows:
-    #   { belongs_to: { relationship_name: relationship_definition }, has_many: { relationship_name: relationship_definition }
+    #   { belongs_to: { relationship_name: relationship_definition }, has_many: { relationship_name: relationship_definition, addition_to_included: { relationship_name: relationship_definition } } }
+    #
+    # @note The addition_to_included is used to define the extra nested relationships that are not defined in the belongs_to or has_many for included.
     #
     # @example
     #  {
@@ -192,7 +172,10 @@ module Schemable
     #    },
     #    has_many: {
     #      applicants: Swagger::Definitions::Applicant,
-    #    }
+    #    },
+    #   addition_to_included: {
+    #     applicants: Swagger::Definitions::Applicant
+    #   }
     #  }
     def relationships: -> Hash[Symbol, any]
 
@@ -261,6 +244,7 @@ module Schemable
     #  { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
     def camelize_keys: (Hash[Symbol, any]) -> (Hash[Symbol, any] | Array[Hash[Symbol, any]])
 
+    # Returns the schema for the create request body, update request body, and response body.
     def self.generate: -> Array[Hash[Symbol, any]]
   end
 end

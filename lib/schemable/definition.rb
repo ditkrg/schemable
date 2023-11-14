@@ -81,10 +81,6 @@ module Schemable
       %i[]
     end
 
-    def nested_relationships
-      {}
-    end
-
     def serialized_instance
       {}
     end
