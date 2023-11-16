@@ -1,7 +1,16 @@
 module Schemable
+  # The AttributeSchemaGenerator class is responsible for generating JSON schemas for model attributes.
+  # It includes methods for generating the overall schema and individual attribute schemas.
+  #
+  # @see Schemable
   class AttributeSchemaGenerator
     attr_reader :model_definition, :configuration, :model, :schema_modifier, :response
 
+    # Initializes a new AttributeSchemaGenerator instance.
+    #
+    # @param model_definition [ModelDefinition] The model definition to generate the schema for.
+    # @example
+    #   generator = AttributeSchemaGenerator.new(model_definition)
     def initialize(model_definition)
       @model_definition = model_definition
       @model = model_definition.model
@@ -10,7 +19,11 @@ module Schemable
       @response = nil
     end
 
-    # Generate the JSON schema for attributes
+    # Generates the JSON schema for the model attributes.
+    #
+    # @return [Hash] The generated schema.
+    # @example
+    #   schema = generator.generate
     def generate
       schema = {
         type: :object,
@@ -37,7 +50,12 @@ module Schemable
       schema
     end
 
-    # Generate the JSON schema for a specific attribute
+    # Generates the JSON schema for a specific attribute.
+    #
+    # @param attribute [Symbol, String] The attribute to generate the schema for.
+    # @return [Hash] The generated schema for the attribute.
+    # @example
+    #   attribute_schema = generator.generate_attribute_schema(:attribute_name)
     def generate_attribute_schema(attribute)
       if @configuration.orm == :mongoid
         # Get the column hash for the attribute
