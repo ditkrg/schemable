@@ -1,4 +1,9 @@
 module Schemable
+  # The Configuration class provides a set of configuration options for the Schemable module.
+  # It includes options for setting the ORM, handling timestamps, custom type mappers, and more.
+  # It is worth noting that the configuration options are global, and will affect all Definitions.
+  #
+  # @see Schemable
   class Configuration
     attr_accessor(
       :orm,
@@ -15,6 +20,7 @@ module Schemable
       :infer_attributes_from_jsonapi_serializable,
     )
 
+    # Initializes a new Configuration instance with default values.
     def initialize
       @timestamps = true
       @orm = :active_record # orm options are :active_record, :mongoid
@@ -30,6 +36,15 @@ module Schemable
       @infer_attributes_from_jsonapi_serializable = false
     end
 
+    # Returns a type mapper for a given type name.
+    #
+    # @note If a custom type mapper is defined for the given type name, it will be returned.
+    #
+    # @example
+    #   type_mapper(:string) #=> { type: :string }
+    #
+    # @param type_name [Symbol, String] The name of the type.
+    # @return [Hash] The type mapper for the given type name.
     def type_mapper(type_name)
       return @custom_type_mappers[type_name] if @custom_type_mappers.key?(type_name)
 
@@ -78,6 +93,20 @@ module Schemable
       }[type_name.to_s.underscore.try(:to_sym)]
     end
 
+    # Adds a custom type mapper for a given type name.
+    #
+    # @example
+    #  add_custom_type_mapper(:custom_type, { type: :custom })
+    #  type_mapper(:custom_type) #=> { type: :custom }
+    #
+    #  # It preferable to invoke this method in the config/initializers/schemable.rb file.
+    #  # This way, the custom type mapper will be available for all Definitions.
+    #  Schemable.configure do |config|
+    #   config.add_custom_type_mapper(:custom_type, { type: :custom })
+    #  end
+    #
+    # @param type_name [Symbol, String] The name of the type.
+    # @param mapping [Hash] The mapping to add.
     def add_custom_type_mapper(type_name, mapping)
       custom_type_mappers[type_name.to_sym] = mapping
     end
