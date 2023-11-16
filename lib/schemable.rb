@@ -12,36 +12,35 @@ require_relative 'schemable/request_schema_generator'
 # It includes classes for generating attribute, relationship, included, response, and request schemas.
 # It also provides a configuration class for setting up the module's behavior.
 #
-# @example:
+# @example
 # The following example shows how to use the Schemable module to generate a schema for a Comment model.
 #
-#  # config/initializers/schemable.rb
-#  Schemable.configure do |config|
-#    #... chosen configuration options ...
-#  end
+#   # config/initializers/schemable.rb
+#   Schemable.configure do |config|
+#     #... chosen configuration options ...
+#   end
 #
-#  # lib/swagger/definitions/comment.rb
-#  class Swagger::Definitions::Comment < Schemable::Definition; end
+#    # lib/swagger/definitions/comment.rb
+#   class Swagger::Definitions::Comment < Schemable::Definition; end
 #
-#  # whenever you need to generate the schema for a Comment model.
-#  # i.e. in RSwag's swagger_helper.rb
+#    # whenever you need to generate the schema for a Comment model.
+#    # i.e. in RSwag's swagger_helper.rb
 #
-#  #  spec/swagger_helper.rb
-#  # ...
-#  RSpec.configure do |config|
+#    #  spec/swagger_helper.rb
 #    # ...
+#   RSpec.configure do |config|
 #
-#    config.swagger_docs = {
-#      # ...
-#      components: {
-#        # ...
-#        schemas: Swagger::Definitions::Comment.generate.flatten.reduce({}, :merge)
-#        # ...
-#      }
-#      # ...
-#    }
-#   # ...
-#  end
+#     config.swagger_docs = {
+#       # ...
+#       components: {
+#         # ...
+#         schemas: Swagger::Definitions::Comment.generate.flatten.reduce({}, :merge)
+#         # ...
+#       }
+#       # ...
+#     }
+#     # ...
+#   end
 #
 # @see Schemable::Definition
 # @see Schemable::Configuration
