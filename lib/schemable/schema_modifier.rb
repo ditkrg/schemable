@@ -1,9 +1,54 @@
 module Schemable
+  # The SchemaModifier class provides methods for modifying a given schema.
+  # It includes methods for parsing paths, checking if a path exists in a schema,
+  # deeply merging hashes, adding properties to a schema, and deleting properties from a schema.
+  #
+  # @see Schemable
   class SchemaModifier
+
+    # Parses a given path into an array of symbols.
+    #
+    # @note This method accepts paths in the following formats:
+    # - 'path.to.property'
+    # - 'path.to.array.[0].property'
+    #
+    # @example
+    #  parse_path('path.to.property') #=> [:path, :to, :property]
+    #  parse_path('path.to.array.[0].property') #=> [:path, :to, :array, :[0], :property]
+    #
+    # @param path [String] The path to parse.
+    # @return [Array<Symbol>] The parsed path.
     def parse_path(path)
       path.split('.').map(&:to_sym)
     end
 
+    # Checks if a given path exists in a schema.
+    #
+    # @example
+    #   schema = {
+    #    path: {
+    #        type: :object,
+    #        properties: {
+    #          to: {
+    #            type: :object,
+    #            properties: {
+    #              property: {
+    #                type: :string
+    #              }
+    #            }
+    #          }
+    #        }
+    #     }
+    #   }
+    #
+    #  path = 'path.properties.to.properties.property'
+    #  incorrect_path = 'path.properties.to.properties.invalid'
+    #  path_exists?(schema, path) #=> true
+    #  path_exists?(schema, incorrect_path) #=> false
+    #
+    # @param schema [Hash, Array] The schema to check.
+    # @param path [String] The path to check for.
+    # @return [Boolean] True if the path exists in the schema, false otherwise.
     def path_exists?(schema, path)
       path_segments = parse_path(path)
 
@@ -27,9 +72,30 @@ module Schemable
       true
     end
 
+    # Deeply merges two hashes.
+    #
+    # @example
+    #   destination = { level1: { level2: { level3: 'value' } } }
+    #   new_data = { level1_again: 'value' }
+    #   deep_merge_hashes(destination, new_data)
+    #   #=> { level1: { level2: { level3: 'value' } }, level1_again: 'value' }
+    #
+    #   new_destination = [{ object1: 'value' }, { object2: 'value' }]
+    #   new_new_data = { object3: 'value' }
+    #   deep_merge_hashes(new_destination, new_new_data)
+    #   #=> [{ object1: 'value' }, { object2: 'value' }, { object3: 'value' }]
+    #
+    #   new_destination = { object1: 'value' }
+    #   new_new_data = [{ object2: 'value' }, { object3: 'value' }]
+    #   deep_merge_hashes(new_destination, new_new_data)
+    #   #=> { object1: 'value', object2: 'value', object3: 'value' }
+    #
+    # @param destination [Hash] The hash to merge into.
+    # @param new_data [Hash] The hash to merge from.
+    # @return [Hash] The merged hashes.
     def deep_merge_hashes(destination, new_data)
-      if destination.is_a?(Array) && new_data.is_a?(Array)
-        destination.concat(new_data)
+      if destination.is_a?(Hash) && new_data.is_a?(Array)
+        destination.merge(new_data)
       elsif destination.is_a?(Array) && new_data.is_a?(Hash)
         destination.push(new_data)
       elsif destination.is_a?(Hash) && new_data.is_a?(Hash)
@@ -49,6 +115,30 @@ module Schemable
       destination
     end
 
+    # Adds properties to a schema at a given path.
+    #
+    # @example
+    #   original_schema = { level1: { level2: { level3: 'value' } } }
+    #   new_data = { L3: 'value' }
+    #   path = 'level1.level2'
+    #   add_properties(original_schema, new_schema, path)
+    #   #=> { level1: { level2: { level3: 'value', L3: 'value' } } }
+    #
+    #   new_original_schema = { test: [{ object1: 'value' }, { object2: 'value' }] }
+    #   new_new_schema = { object2_again: 'value' }
+    #   path = 'test.[1]'
+    #   add_properties(new_original_schema, new_new_schema, path)
+    #   #=> { test: [{ object1: 'value' }, { object2: 'value', object2_again: 'value' }] }
+    #
+    # @param original_schema [Hash] The original schema.
+    # @param new_schema [Hash] The new schema to add.
+    # @param path [String] The path at which to add the new schema.
+    # @note This method accepts paths in the following formats:
+    # - 'path.to.property'
+    # - 'path.to.array.[0].property'
+    # - '.'
+    #
+    # @return [Hash] The modified schema.
     def add_properties(original_schema, new_schema, path)
       return deep_merge_hashes(original_schema, new_schema) if path == '.'
 
@@ -94,6 +184,22 @@ module Schemable
       original_schema
     end
 
+    # Deletes properties from a schema at a given path.
+    #
+    # @example
+    #   original_schema = { level1: { level2: { level3: 'value' } } }
+    #   path = 'level1.level2'
+    #   delete_properties(original_schema, path)
+    #   #=> { level1: {} }
+    #
+    #   new_original_schema = { test: [{ object1: 'value' }, { object2: 'value' }] }
+    #   path = 'test.[1]'
+    #   delete_properties(new_original_schema, path)
+    #   #=> { test: [{ object1: 'value' }] }
+    #
+    # @param original_schema [Hash] The original schema.
+    # @param path [String] The path at which to delete properties.
+    # @return [Hash] The modified schema.
     def delete_properties(original_schema, path)
       return original_schema if path == '.'
 
