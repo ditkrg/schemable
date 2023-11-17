@@ -1,7 +1,6 @@
 module Schemable
   class Configuration
     attr_accessor orm: Symbol
-    attr_accessor timestamps: bool
     attr_accessor float_as_string: bool
     attr_accessor decimal_as_string: bool
     attr_accessor disable_factory_bot: bool

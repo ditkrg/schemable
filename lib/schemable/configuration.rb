@@ -1,13 +1,12 @@
 module Schemable
   # The Configuration class provides a set of configuration options for the Schemable module.
-  # It includes options for setting the ORM, handling timestamps, custom type mappers, and more.
+  # It includes options for setting the ORM, handling enums, custom type mappers, and more.
   # It is worth noting that the configuration options are global, and will affect all Definitions.
   #
   # @see Schemable
   class Configuration
     attr_accessor(
       :orm,
-      :timestamps,
       :float_as_string,
       :decimal_as_string,
       :custom_type_mappers,
@@ -22,7 +21,6 @@ module Schemable
 
     # Initializes a new Configuration instance with default values.
     def initialize
-      @timestamps = true
       @orm = :active_record # orm options are :active_record, :mongoid
       @float_as_string = false
       @custom_type_mappers = {}
