@@ -3,6 +3,7 @@ module Schemable
     attr_reader model: Class
     attr_reader model_definition: Definition
     attr_reader schema_modifier: SchemaModifier
+    attr_reader configuration: Configuration
 
     def initialize: (Definition) -> void
     def meta: -> Hash[Symbol, any]

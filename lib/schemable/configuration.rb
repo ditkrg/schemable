@@ -9,12 +9,14 @@ module Schemable
       :orm,
       :float_as_string,
       :decimal_as_string,
+      :pagination_enabled,
       :custom_type_mappers,
       :disable_factory_bot,
       :use_serialized_instance,
       :custom_defined_enum_method,
       :enum_prefix_for_simple_enum,
       :enum_suffix_for_simple_enum,
+      :custom_meta_response_schema,
       :infer_attributes_from_custom_method,
       :infer_attributes_from_jsonapi_serializable
     )
@@ -24,10 +26,12 @@ module Schemable
       @orm = :active_record # orm options are :active_record, :mongoid
       @float_as_string = false
       @custom_type_mappers = {}
+      @pagination_enabled = true
       @decimal_as_string = false
       @disable_factory_bot = true
       @use_serialized_instance = false
       @custom_defined_enum_method = nil
+      @custom_meta_response_schema = nil
       @enum_prefix_for_simple_enum = nil
       @enum_suffix_for_simple_enum = nil
       @infer_attributes_from_custom_method = nil

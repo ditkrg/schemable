@@ -1,11 +1,12 @@
 module Schemable
   class ResponseSchemaGenerator
-    attr_reader :model_definition, :model, :schema_modifier
+    attr_reader :model_definition, :model, :schema_modifier, :configuration
 
     def initialize(model_definition)
       @model_definition = model_definition
       @model = model_definition.model
       @schema_modifier = SchemaModifier.new
+      @configuration = Schemable.configuration
     end
 
     def generate(expand: false, relationships_to_exclude_from_expansion: [], collection: false)
@@ -38,32 +39,38 @@ module Schemable
     end
 
     def meta
-      {
-        type: :object,
-        properties: {
-          page: {
-            type: :object,
-            properties: {
-              totalPages: {
-                type: :integer,
-                default: 1
-              },
-              count: {
-                type: :integer,
-                default: 1
-              },
-              rowsPerPage: {
-                type: :integer,
-                default: 1
-              },
-              currentPage: {
-                type: :integer,
-                default: 1
+      return @configuration.custom_meta_response_schema if @configuration.custom_meta_response_schema.present?
+
+      if @configuration.pagination_enabled
+        {
+          type: :object,
+          properties: {
+            page: {
+              type: :object,
+              properties: {
+                totalPages: {
+                  type: :integer,
+                  default: 1
+                },
+                count: {
+                  type: :integer,
+                  default: 1
+                },
+                rowsPerPage: {
+                  type: :integer,
+                  default: 1
+                },
+                currentPage: {
+                  type: :integer,
+                  default: 1
+                }
               }
             }
           }
         }
-      }
+      else
+        {}
+      end
     end
 
     def jsonapi
