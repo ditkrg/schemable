@@ -1,12 +1,31 @@
 module Schemable
+  # The RequestSchemaGenerator class is responsible for generating JSON schemas for create and update requests.
+  # This class generates schemas based on the model definition, including additional and excluded attributes.
+  #
+  # @see Schemable
   class RequestSchemaGenerator
     attr_reader :model_definition, :schema_modifier
 
+    # Initializes a new RequestSchemaGenerator instance.
+    #
+    # @param model_definition [ModelDefinition] The model definition to generate the schema for.
+    #
+    # @example
+    #   generator = RequestSchemaGenerator.new(model_definition)
     def initialize(model_definition)
       @model_definition = model_definition
       @schema_modifier = SchemaModifier.new
     end
 
+    # Generates the JSON schema for a create request.
+    # It generates a schema for the model attributes and then modifies it based on the additional and excluded attributes for create requests.
+    # It also determines the required attributes based on the optional and nullable attributes.
+    # Note that it is presumed that the model is using the same fields/columns for create as well as responses.
+    #
+    # @example
+    #   schema = generator.generate_for_create
+    #
+    # @return [Hash] The generated schema for create requests.
     def generate_for_create
       schema = {
         type: :object,
@@ -32,6 +51,15 @@ module Schemable
       @schema_modifier.add_properties(schema, required_attributes, 'properties.data')
     end
 
+    # Generates the JSON schema for a update request.
+    # It generates a schema for the model attributes and then modifies it based on the additional and excluded attributes for update requests.
+    # It also determines the required attributes based on the optional and nullable attributes.
+    # Note that it is presumed that the model is using the same fields/columns for update as well as responses.
+    #
+    # @example
+    #   schema = generator.generate_for_update
+    #
+    # @return [Hash] The generated schema for update requests.
     def generate_for_update
       schema = {
         type: :object,
