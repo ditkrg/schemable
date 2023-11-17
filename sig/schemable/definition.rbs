@@ -25,8 +25,8 @@ module Schemable
     def excluded_update_request_attributes: -> Array[Symbol]
     def optional_create_request_attributes: -> Array[Symbol]
     def optional_update_request_attributes: -> Array[Symbol]
-    def camelize_keys: (Hash[Symbol, any]) -> (Hash[Symbol, any])
     def additional_create_request_attributes: -> Hash[Symbol, any]
     def additional_update_request_attributes: -> Hash[Symbol, any]
+    def camelize_keys: (Hash[Symbol, any]) -> (Array[Hash[Symbol, any]] | Hash[Symbol, any])
   end
 end

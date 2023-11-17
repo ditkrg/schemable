@@ -297,7 +297,7 @@ module Schemable
     #
     # @param hash [Hash] The hash with all the keys camelized.
     #
-    # @return [Hash] The hash with all the keys camelized.
+    # @return [Hash, Array] The hash with all the keys camelized.
     #
     # @example
     #  { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
