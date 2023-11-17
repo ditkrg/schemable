@@ -5,246 +5,28 @@ module Schemable
     attr_writer additional_create_request_attributes: Hash[Symbol, any]
     attr_writer additional_update_request_attributes: Hash[Symbol, any]
 
-    # Initializes the definition with the configuration.
-    def initialize: -> void
-
-    # Returns the attributes that are nullable in the request/response body. This means that they can be present in the request/response body but they can be null.
-    # They are not required to be present in the request body.
-    #
-    # @return [Array<Symbol>] The attributes that are nullable in the request/response body.
-    #
-    # @example
-    #  [:name, :email]
-    def nullable_attributes: -> Array[Symbol]
-
-    # Returns the additional create request attributes that are not automatically generated. These attributes are appended to the create request schema.
-    #
-    # @return [Hash] The additional create request attributes that are not automatically generated (if any).
-    #
-    # @example
-    #  {
-    #    name: { type: :string }
-    #  }
-    def additional_create_request_attributes: -> Hash[Symbol, any]
-
-    # Returns the additional update request attributes that are not automatically generated. These attributes are appended to the update request schema.
-    #
-    # @return [Hash] The additional update request attributes that are not automatically generated (if any).
-    #
-    # @example
-    #  {
-    #    name: { type: :string }
-    #  }
-    def additional_update_request_attributes: -> Hash[Symbol, any]
-
-    # Returns the additional response attributes that are not automatically generated. These attributes are appended to the response schema.
-    #
-    # @return [Hash] The additional response attributes that are not automatically generated (if any).
-    #
-    # @example
-    #  {
-    #    name: { type: :string }
-    #  }
-    def additional_response_attributes: -> Hash[Symbol, any]
-
-    # Returns the additional response relations that are not automatically generated. These relations are appended to the response schema's relationships.
-    #
-    # @return [Hash] The additional response relations that are not automatically generated (if any).
-    #
-    # @example
-    #  {
-    #    users: {
-    #      type: :object,
-    #      properties: {
-    #        data: {
-    #          type: :array,
-    #          items: {
-    #            type: :object,
-    #            properties: {
-    #              id: { type: :string },
-    #              type: { type: :string }
-    #            }
-    #          }
-    #        }
-    #      }
-    #    }
-    #  }
-    def additional_response_relations: -> Hash[Symbol, any]
-
-    # Returns the additional response included that are not automatically generated. These included are appended to the response schema's included.
-    #
-    # @return [Hash] The additional response included that are not automatically generated (if any).
-    #
-    # @example
-    #  {
-    #    type: :object,
-    #    properties: {
-    #      id: { type: :string },
-    #      type: { type: :string },
-    #      attributes: {
-    #        type: :object,
-    #        properties: {
-    #          name: { type: :string }
-    #        }
-    #      }
-    #    }
-    #  }
-    def additional_response_included: -> Hash[Symbol, any]
-
-    # Returns the attributes that are excluded from the create request schema.
-    # These attributes are not required or not needed to be present in the create request body.
-    #
-    # @return [Array<Symbol>] The attributes that are excluded from the create request schema.
-    #
-    # @example
-    #  [:id, :updated_at, :created_at]
-    def excluded_create_request_attributes: -> Array[Symbol]
-
-    # Returns the attributes that are excluded from the response schema.
-    # These attributes are not needed to be present in the response body.
-    #
-    # @return [Array<Symbol>] The attributes that are excluded from the response schema.
-    #
-    # @example
-    #  [:id, :updated_at, :created_at]
-    def excluded_response_attributes: -> Array[Symbol]
-
-    # Returns the attributes that are excluded from the update request schema.
-    # These attributes are not required or not needed to be present in the update request body.
-    #
-    # @return [Array<Symbol>] The attributes that are excluded from the update request schema.
-    #
-    # @example
-    #  [:id, :updated_at, :created_at]
-    def excluded_update_request_attributes: -> Array[Symbol]
-
-    # Returns the relationships that are excluded from the response schema.
-    # These relationships are not needed to be present in the response body.
-    #
-    # @return [Array<Symbol>] The relationships that are excluded from the response schema.
-    #
-    # @example
-    #  [:users, :applicants]
-    def excluded_response_relations: -> Array[Symbol]
-
-    # Returns the included that are excluded from the response schema.
-    # These included are not needed to be present in the response body.
-    #
-    # @return [Array<Symbol>] The included that are excluded from the response schema.
-    #
-    # @example
-    #  [:users, :applicants]
-    #
-    # @todo
-    #  This method is not used anywhere yet.
-    def excluded_response_included: -> Array[Symbol]
-
-    # Returns the resource serializer to be used for serialization.
-    #
-    # @return [Class] The resource serializer class.
-    #
-    # @example
-    #  V1::UserSerializer
-    def serializer: -> Class?
-
-    # Returns the attributes defined in the serializer (Auto generated from the serializer), or from a custom method, or from attributes_names method.
-    #
-    # @return [Array<Symbol>] The attributes to be generated.
-    #
-    # @example
-    #  [:id, :name, :email, :created_at, :updated_at]
-    def attributes: -> Array[Symbol]
-
-    # Returns the relationships defined in the serializer.
-    #
-    # @return [Hash] The relationships defined in the serializer.
-    #
-    # @note Note that the format of the relationships is as follows:
-    #   { belongs_to: { relationship_name: relationship_definition }, has_many: { relationship_name: relationship_definition, addition_to_included: { relationship_name: relationship_definition } } }
-    #
-    # @note The addition_to_included is used to define the extra nested relationships that are not defined in the belongs_to or has_many for included.
-    #
-    # @example
-    #  {
-    #    belongs_to: {
-    #      district: Swagger::Definitions::District,
-    #      user: Swagger::Definitions::User
-    #    },
-    #    has_many: {
-    #      applicants: Swagger::Definitions::Applicant,
-    #    },
-    #   addition_to_included: {
-    #     applicants: Swagger::Definitions::Applicant
-    #   }
-    #  }
-    def relationships: -> Hash[Symbol, any]
-
-    # Returns a hash of all the arrays defined for the model. The schema for each array is defined in the definition class manually.
-    # This method must be implemented in the definition class if there are any arrays.
-    #
-    # @return [Hash] The arrays of the model and their schemas.
-    #
-    # @example
-    #  {
-    #    metadata: {
-    #        type: :array,
-    #        items: {
-    #            type: :object, nullable: true,
-    #            properties: { name: { type: :string, nullable: true } }
-    #        }
-    #    }
-    #  }
-    def array_types: -> Hash[Symbol, any]
-
-    # Returns the attributes that are optional in the create request body. This means that they are not required to be present in the create request body thus they are taken out of the required array.
-    #
-    # @return [Array<Symbol>] The attributes that are optional in the create request body.
-    #
-    # @example
-    #  [:name, :email]
-    def optional_create_request_attributes: -> Array[Symbol]
-
-    # Returns the attributes that are optional in the update request body. This means that they are not required to be present in the update request body thus they are taken out of the required array.
-    #
-    # @return [Array<Symbol>] The attributes that are optional in the update request body.
-    #
-    # @example
-    #  [:name, :email]
-    def optional_update_request_attributes: -> Array[Symbol]
-
-    # Returns an instance of the model class that is already serialized into jsonapi format.
-    #
-    # @return [Hash] The serialized instance of the model class.
-    def serialized_instance: -> Hash[Symbol, any]
-
-    # Returns the model class (Constantized from the definition class name)
-    #
-    # @return [Class] The model class (Constantized from the definition class name)
-    #
-    # @example
-    #  User
     def model: -> Class
-
-    # Returns the model name. Used for schema type naming.
-    #
-    # @return [String] The model name.
-    #
-    # @example
-    #  'users' for the User model
-    #  'citizen_applications' for the CitizenApplication model
+    def initialize: -> void
+    def serializer: -> Class?
     def model_name: -> String
-
-    # Given a hash, it returns a new hash with all the keys camelized.
-    #
-    # @param hash [Array | Hash] The hash with all the keys camelized.
-    #
-    # @return [Array | Hash] The hash with all the keys camelized.
-    #
-    # @example
-    #  { first_name: 'John', last_name: 'Doe' } => { firstName: 'John', lastName: 'Doe' }
-    def camelize_keys: (Hash[Symbol, any]) -> (Hash[Symbol, any] | Array[Hash[Symbol, any]])
-
-    # Returns the schema for the create request body, update request body, and response body.
+    def attributes: -> Array[Symbol]
+    def array_types: -> Hash[Symbol, any]
+    def relationships: -> Hash[Symbol, any]
+    def nullable_attributes: -> Array[Symbol]
+    def serialized_instance: -> Hash[Symbol, any]
     def self.generate: -> Array[Hash[Symbol, any]]
+    def excluded_response_included: -> Array[Symbol]
+    def excluded_response_relations: -> Array[Symbol]
+    def excluded_response_attributes: -> Array[Symbol]
+    def additional_response_included: -> Hash[Symbol, any]
+    def additional_response_relations: -> Hash[Symbol, any]
+    def additional_response_attributes: -> Hash[Symbol, any]
+    def excluded_create_request_attributes: -> Array[Symbol]
+    def excluded_update_request_attributes: -> Array[Symbol]
+    def optional_create_request_attributes: -> Array[Symbol]
+    def optional_update_request_attributes: -> Array[Symbol]
+    def camelize_keys: (Hash[Symbol, any]) -> (Hash[Symbol, any])
+    def additional_create_request_attributes: -> Hash[Symbol, any]
+    def additional_update_request_attributes: -> Hash[Symbol, any]
   end
 end
