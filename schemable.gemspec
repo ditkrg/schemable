@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ['Muhammad Nawzad']
   spec.email = ['hama127n@gmail.com']
 
-  spec.summary = 'An opiniated Gem for Rails applications to auto generate schema in JSONAPI format.'
-  spec.description = "The schemable gem is an opiniated Gem for Rails applications to auto generate schema for models in JSONAPI format. It is designed to work with rswag's swagger documentation since it can generate the schemas for it."
+  spec.summary = 'An opinionated Gem for Rails applications to auto generate schema in JSONAPI format.'
+  spec.description = "The schemable gem is an opinionated Gem for Rails applications to auto generate schema for models in JSONAPI format. It is designed to work with rswag's swagger documentation since it can generate the schemas for it."
   spec.homepage = 'https://github.com/muhammadnawzad/schemable'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1.2'
@@ -28,9 +28,6 @@ Gem::Specification.new do |spec|
   spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-
-  spec.add_dependency 'factory_bot_rails', '~> 6.2.0'
-  spec.add_dependency 'jsonapi-rails', '~> 0.4.1'
 
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
