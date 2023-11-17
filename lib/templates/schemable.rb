@@ -41,7 +41,6 @@ Schemable.configure do |config|
   #
   # config.infer_attributes_from_custom_method = nil
 
-
   # If you want to get the list of attributes from the jsonapi-rails gem's
   # JSONAPI::Serializable::Resource class, set this option to true.
   # It uses the attribute_blocks method to get the list of attributes.
@@ -65,7 +64,6 @@ Schemable.configure do |config|
   # of the enum schema for you, with correct values.
   #
   # config.custom_defined_enum_method = nil
-
 
   # If you use mongoid and simple_enum gem, you can set the below options to the prefix and suffix
   # Since simple_enum uses the prefix and suffix to generate the enum methods, and the fields' names
