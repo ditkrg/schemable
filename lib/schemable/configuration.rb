@@ -17,7 +17,7 @@ module Schemable
       :enum_prefix_for_simple_enum,
       :enum_suffix_for_simple_enum,
       :infer_attributes_from_custom_method,
-      :infer_attributes_from_jsonapi_serializable,
+      :infer_attributes_from_jsonapi_serializable
     )
 
     # Initializes a new Configuration instance with default values.
@@ -46,7 +46,7 @@ module Schemable
     # @param type_name [Symbol, String] The name of the type.
     # @return [Hash] The type mapper for the given type name.
     def type_mapper(type_name)
-      return @custom_type_mappers[type_name] if @custom_type_mappers.key?(type_name)
+      return @custom_type_mappers[type_name] if @custom_type_mappers.key?(type_name.to_sym)
 
       {
         text: { type: :string },

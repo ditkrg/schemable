@@ -62,7 +62,7 @@ module Schemable
         attribute_hash = @model.fields[attribute.to_s]
 
         # Check if this attribute has a custom JSON Schema definition
-        return @model_definition.array_types[attribute] if @model_definition.array_types.keys.include?(attribute)
+        return @model_definition.array_types[attribute] if @model_definition.array_types.keys.include?(attribute.to_sym)
         return @model_definition.additional_response_attributes[attribute] if @model_definition.additional_response_attributes.keys.include?(attribute)
 
         # Check if this is an array attribute
@@ -81,7 +81,7 @@ module Schemable
         attribute_hash = @model.columns_hash[attribute.to_s]
 
         # Check if this attribute has a custom JSON Schema definition
-        return @model_definition.array_types[attribute] if @model_definition.array_types.keys.include?(attribute)
+        return @model_definition.array_types[attribute] if @model_definition.array_types.keys.include?(attribute.to_sym)
         return @model_definition.additional_response_attributes[attribute] if @model_definition.additional_response_attributes.keys.include?(attribute)
 
         # Check if this is an array attribute

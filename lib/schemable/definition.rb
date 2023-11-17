@@ -3,7 +3,7 @@ module Schemable
   # It includes methods for handling attributes, relationships, and various request and response attributes.
   # The definition class is meant to be inherited by a class that represents a model.
   # This class should be configured to match the model's attributes and relationships.
-  # The defaullt configuration is set in this class, but can be overridden in the model's definition class.
+  # The default configuration is set in this class, but can be overridden in the model's definition class.
   #
   # @see Schemable
   class Definition
