@@ -4,7 +4,6 @@ module Schemable
     attr_accessor float_as_string: bool
     attr_accessor decimal_as_string: bool
     attr_accessor pagination_enabled: bool
-    attr_accessor disable_factory_bot: bool
     attr_accessor use_serialized_instance: bool
     attr_accessor custom_defined_enum_method: Symbol?
     attr_accessor enum_prefix_for_simple_enum: String?
