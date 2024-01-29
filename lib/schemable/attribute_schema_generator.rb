@@ -101,9 +101,25 @@ module Schemable
       if @configuration.custom_defined_enum_method && @model.respond_to?(@configuration.custom_defined_enum_method)
         defined_enums = @model.send(@configuration.custom_defined_enum_method)
         enum_attribute = attribute.to_s.gsub(@configuration.enum_prefix_for_simple_enum || @configuration.enum_suffix_for_simple_enum, '').to_s
-        return @schema_modifier.add_properties(@response, { enum: defined_enums[enum_attribute].keys }, '.') if @response && defined_enums[enum_attribute].present?
-      elsif @model.respond_to?(:defined_enums)
-        return @schema_modifier.add_properties(@response, { enum: @model.defined_enums[attribute.to_s].keys }, '.') if @response && @model.defined_enums.key?(attribute.to_s)
+        if @response && defined_enums[enum_attribute].present?
+          return @schema_modifier.add_properties(
+            @response,
+            {
+              enum: defined_enums[enum_attribute].keys,
+              default: @model_definition.default_value_for_enum_attributes[attribute.to_sym] || defined_enums[enum_attribute].keys.first
+            },
+            '.'
+          )
+        end
+      elsif @model.respond_to?(:defined_enums) && @response && @model.defined_enums.key?(attribute.to_s)
+        return @schema_modifier.add_properties(
+          @response,
+          {
+            enum: @model.defined_enums[attribute.to_s].keys,
+            default: @model_definition.default_value_for_enum_attributes[attribute.to_sym] || @model.defined_enums[attribute.to_s].keys.first
+          },
+          '.'
+        )
       end
 
       return @response unless @response.nil?
