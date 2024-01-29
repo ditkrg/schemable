@@ -265,6 +265,19 @@ module Schemable
       %i[]
     end
 
+    # Returns the default value for the enum attributes.
+    #
+    # @example
+    #  {
+    #    status: 'pending',
+    #    flag: 0
+    #  }
+    #
+    # @return [Hash] The custom default values for the enum attributes.
+    def default_value_for_enum_attributes
+      {}
+    end
+
     # Returns an instance of the model class that is already serialized into jsonapi format.
     #
     # @return [Hash] The serialized instance of the model class.
