@@ -84,36 +84,43 @@ module Schemable
     #
     # @return [Hash] The generated schema for the relationship.
     def generate_schema(type_name, collection: false)
-      if collection
-        {
-          type: :object,
-          properties: {
-            data: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :string },
-                  type: { type: :string, default: type_name }
-                }
-              }
-            }
-          }
-        }
-      else
-        {
-          type: :object,
-          properties: {
-            data: {
-              type: :object,
-              properties: {
-                id: { type: :string },
-                type: { type: :string, default: type_name }
-              }
-            }
-          }
-        }
-      end
+      schema = if collection
+                 {
+                   type: :object,
+                   properties: {
+                     data: {
+                       type: :array,
+                       items: {
+                         type: :object,
+                         properties: {
+                           id: { type: :string },
+                           type: { type: :string, default: type_name }
+                         }
+                       }
+                     }
+                   }
+                 }
+               else
+                 {
+                   type: :object,
+                   properties: {
+                     data: {
+                       type: :object,
+                       properties: {
+                         id: { type: :string },
+                         type: { type: :string, default: type_name }
+                       }
+                     }
+                   }
+                 }
+               end
+
+      # Modify the schema to nullable if the relationship is in nullable
+      is_relation_nullable = @model_definition.nullable_relationships.include?(type_name)
+
+      return schema unless is_relation_nullable
+
+      @schema_modifier.add_properties(schema, { nullable: true }, 'properties.data')
     end
   end
 end
