@@ -1,6 +1,10 @@
 # Changelog
 This file is used to list changes made in each version of the Schemable gem.
 
+## Schemable 1.0.2 (2024-01-30)
+
+* Added configuration for making certain associations nullable in the response's relationship. This can be done by adding the name of the relation in the `nullable_relationships` method's array of strings.
+
 ## Schemable 1.0.1 (2024-01-29)
 
 * Added configuration for changing the default value of enums. By default first key is used, or alternatively default can be set manually by the method `default_value_for_enum_attributes` from the definition.
