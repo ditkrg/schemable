@@ -86,6 +86,7 @@ The following is a list of the methods that can be overridden. (See the example 
 | `optional_create_request_attributes`   | Returns the attributes that are not required in the create request.                                                                                    |
 | `optional_update_request_attributes`   | Returns the attributes that are not required in the update request.                                                                                    |
 | `nullable_attributes`                  | Returns the attributes that are nullable in the request/response body.                                                                                 |
+| `nullable_relationships`               | Returns the relationships that are nullable in the response body.                                                                                      |
 | `additional_create_request_attributes` | Returns the additional create request attributes that are not automatically generated.                                                                 |
 | `additional_update_request_attributes` | Returns the additional update request attributes that are not automatically generated.                                                                 |
 | `additional_response_attributes`       | Returns the additional response attributes that are not automatically generated.                                                                       |
