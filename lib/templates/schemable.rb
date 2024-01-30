@@ -41,6 +41,11 @@ Schemable.configure do |config|
   #
   # config.infer_attributes_from_custom_method = nil
 
+  # If you want to recursively expand the relationships in the response schema
+  # then set this option to true, otherwise set it to false (default).
+  #
+  # config.infer_expand_nested_from_expand = true
+
   # If you want to get the list of attributes from the jsonapi-rails gem's
   # JSONAPI::Serializable::Resource class, set this option to true.
   # It uses the attribute_blocks method to get the list of attributes.
