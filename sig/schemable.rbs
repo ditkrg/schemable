@@ -1,4 +1,7 @@
 module Schemable
   VERSION: String
-  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+
+  attr_accessor configuration: Configuration
+
+  def configure: () { (Configuration) -> Configuration } -> Configuration
 end

@@ -1,0 +1,11 @@
+module Schemable
+  class IncludedSchemaGenerator
+    attr_reader model_definition: Definition
+    attr_reader schema_modifier: SchemaModifier
+    attr_reader relationships: Hash[Symbol, any]
+
+    def initialize: (Definition) -> void
+    def generate: (?relationships_to_exclude_from_expansion: Array[String], ?expand: bool) -> (Hash[Symbol, any])
+    def prepare_schema_for_included: (Definition, ?relationships_to_exclude_from_expansion: Array[String], ?expand: bool) -> Hash[Symbol, any]
+  end
+end

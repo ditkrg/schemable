@@ -1,0 +1,9 @@
+module Schemable
+  class SchemaModifier
+    def parse_path: (path: String) -> Array[Symbol]
+    def path_exists?: (schema: Hash[Symbol, any], path: String) -> bool
+    def deep_merge_hashes: (destination: Hash[Symbol, any], new_data: Hash[Symbol, any]) -> (Hash[Symbol, any])
+    def add_properties: (original_schema: (Hash[Symbol, any]), new_schema: Hash[Symbol, any], path: String) -> (Hash[Symbol, any])
+    def delete_properties: (original_schema: (Hash[Symbol, any]), path: String) -> (Hash[Symbol, any])
+  end
+end

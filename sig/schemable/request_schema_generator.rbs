@@ -1,0 +1,10 @@
+module Schemable
+  class RequestSchemaGenerator
+    attr_reader model_definition: Definition
+    attr_reader schema_modifier: SchemaModifier
+
+    def initialize: (Definition) -> void
+    def generate_for_create: () -> (Hash[Symbol, any])
+    def generate_for_update: () -> (Hash[Symbol, any])
+  end
+end

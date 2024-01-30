@@ -1,0 +1,34 @@
+module Schemable
+  class Definition
+    attr_reader configuration: Configuration
+    attr_writer relationships: Hash[Symbol, any]
+    attr_writer additional_create_request_attributes: Hash[Symbol, any]
+    attr_writer additional_update_request_attributes: Hash[Symbol, any]
+
+    def model: -> Class
+    def initialize: -> void
+    def serializer: -> Class?
+    def model_name: -> String
+    def attributes: -> Array[Symbol]
+    def array_types: -> Hash[Symbol, any]
+    def relationships: -> Hash[Symbol, any]
+    def nullable_attributes: -> Array[Symbol]
+    def nullable_relationships: -> Array[String]
+    def serialized_instance: -> Hash[Symbol, any]
+    def self.generate: -> Array[Hash[Symbol, any]]
+    def excluded_response_included: -> Array[Symbol]
+    def excluded_response_relations: -> Array[Symbol]
+    def excluded_response_attributes: -> Array[Symbol]
+    def additional_response_included: -> Hash[Symbol, any]
+    def additional_response_relations: -> Hash[Symbol, any]
+    def additional_response_attributes: -> Hash[Symbol, any]
+    def excluded_create_request_attributes: -> Array[Symbol]
+    def excluded_update_request_attributes: -> Array[Symbol]
+    def optional_create_request_attributes: -> Array[Symbol]
+    def optional_update_request_attributes: -> Array[Symbol]
+    def default_value_for_enum_attributes: -> Hash[Symbol, any]
+    def additional_create_request_attributes: -> Hash[Symbol, any]
+    def additional_update_request_attributes: -> Hash[Symbol, any]
+    def camelize_keys: (Hash[Symbol, any]) -> (Array[Hash[Symbol, any]] | Hash[Symbol, any])
+  end
+end

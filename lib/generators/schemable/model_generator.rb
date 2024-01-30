@@ -4,8 +4,8 @@ module Schemable
     source_root File.expand_path('../../templates', __dir__)
     class_option :model_name, type: :string, default: 'Model', desc: 'Name of the model'
 
-    def initialize(*)
-      super(*)
+    def initialize(*args)
+      super(*args)
 
       @model_name = options[:model_name]
       @model_name != 'Model' || raise('Model name is required')
@@ -21,30 +21,19 @@ module Schemable
         create_file(target_path, <<-FILE
 module Swagger
   module Definitions
-    class #{@model_name.classify}
-
-      include Schemable
-      include SerializersHelper # This is a helper module that contains a method "serializers_map" that maps models to serializers
-
-      attr_accessor :instance
-
-      def initialize
-        @instance ||=  JSONAPI::Serializable::Renderer.new.render(FactoryBot.create(:#{@model_name.underscore.downcase.singularize}), class: serializers_map, include: [])
+    class #{@model_name.classify} < Schemable::Definition
+      def excluded_create_request_attributes
+        %i[updated_at created_at]
       end
 
-      def serializer
-        V1::#{@model_name.classify}Serializer
-      end
-
-      def excluded_request_attributes
-        %i[id updatedAt createdAt]
+      def excluded_update_request_attributes
+        %i[updated_at created_at]
       end
     end
   end
 end
 FILE
         )
-
       end
     end
   end
