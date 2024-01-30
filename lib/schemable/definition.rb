@@ -125,6 +125,18 @@ module Schemable
       %i[]
     end
 
+    # Returns the relationships that are nullable in the response body.
+    # This means that they can be present in the response body but they can be null.
+    # They are not required to be present in the request body.
+    #
+    # @example
+    #  ['users', 'applicant']
+    #
+    # @return [Array<String>] The attributes that are nullable in the response body.
+    def nullable_relationships
+      %w[]
+    end
+
     # Returns the additional create request attributes that are not automatically generated.
     # These attributes are appended to the create request schema.
     #

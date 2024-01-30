@@ -13,6 +13,7 @@ module Schemable
     def array_types: -> Hash[Symbol, any]
     def relationships: -> Hash[Symbol, any]
     def nullable_attributes: -> Array[Symbol]
+    def nullable_relationships: -> Array[String]
     def serialized_instance: -> Hash[Symbol, any]
     def self.generate: -> Array[Hash[Symbol, any]]
     def excluded_response_included: -> Array[Symbol]
