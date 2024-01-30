@@ -27,12 +27,16 @@ module Schemable
     # @param expand [Boolean] Whether to include the included resources in the schema.
     # @param relationships_to_exclude_from_expansion [Array] The relationships to exclude from expansion in the schema.
     # @param collection [Boolean] Whether the response is for a collection of resources.
+    # @param expand_nested [Boolean] Whether to include the nested relationships in the schema.
     #
     # @example
-    #   schema = generator.generate(expand: true, relationships_to_exclude_from_expansion: ['some_relationship'], collection: true)
+    #   schema = generator.generate(expand: true, relationships_to_exclude_from_expansion: ['some_relationship'], collection: true, expand_nested: true)
     #
     # @return [Hash] The generated schema.
-    def generate(expand: false, relationships_to_exclude_from_expansion: [], collection: false)
+    def generate(expand: false, relationships_to_exclude_from_expansion: [], collection: false, expand_nested: false)
+      # Override expand_nested if infer_expand_nested_from_expand is true
+      expand_nested = expand if @configuration.infer_expand_nested_from_expand
+
       data = {
         type: :object,
         properties: {
@@ -51,7 +55,7 @@ module Schemable
       schema = collection ? { data: { type: :array, items: data } } : { data: }
 
       if expand
-        included_schema = IncludedSchemaGenerator.new(@model_definition).generate(expand:, relationships_to_exclude_from_expansion:)
+        included_schema = IncludedSchemaGenerator.new(@model_definition).generate(expand: expand_nested, relationships_to_exclude_from_expansion:)
         @schema_modifier.add_properties(schema, included_schema, '.')
       end
 
