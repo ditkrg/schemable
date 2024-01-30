@@ -8,6 +8,7 @@ module Schemable
     attr_accessor custom_defined_enum_method: Symbol?
     attr_accessor enum_prefix_for_simple_enum: String?
     attr_accessor enum_suffix_for_simple_enum: String?
+    attr_accessor infer_expand_nested_from_expand: bool
     attr_accessor custom_type_mappers: Hash[Symbol, any]
     attr_accessor infer_attributes_from_custom_method: Symbol?
     attr_accessor custom_meta_response_schema: Hash[Symbol, any]?

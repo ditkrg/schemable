@@ -16,6 +16,7 @@ module Schemable
       :enum_prefix_for_simple_enum,
       :enum_suffix_for_simple_enum,
       :custom_meta_response_schema,
+      :infer_expand_nested_from_expand,
       :infer_attributes_from_custom_method,
       :infer_attributes_from_jsonapi_serializable
     )
@@ -32,6 +33,7 @@ module Schemable
       @custom_meta_response_schema = nil
       @enum_prefix_for_simple_enum = nil
       @enum_suffix_for_simple_enum = nil
+      @infer_expand_nested_from_expand = false
       @infer_attributes_from_custom_method = nil
       @infer_attributes_from_jsonapi_serializable = false
     end
